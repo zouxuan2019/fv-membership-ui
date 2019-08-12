@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form #form="ngForm" (ngSubmit)="login(form)">
+    <ion-grid>
+      <ion-row justify-content-center>
+        <ion-col>
+          <div class="imgcontainer">
+            <img src="../../../assets/logo.png" alt="fruits vending" class="fvimg" />
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row color="secondary" justify-content-center>
+        <ion-col>
+          <div padding>
+            <ion-item>
+              <ion-input name="email" type="email" placeholder="your@email.com" ngModel required></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input name="password" type="password" placeholder="Password" ngModel required></ion-input>
+            </ion-item>
+          </div>
+          <div padding>
+            <ion-button size="large" type="submit" [disabled]="form.invalid" expand="block">Login</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <div padding>
+          If you don't have an account, please <a routerLink='/register'>register</a> first!
+        </div>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
