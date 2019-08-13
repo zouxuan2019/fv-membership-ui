@@ -17,12 +17,12 @@ export class MenuPage implements OnInit {
     {
       title: 'E-Wallet',
       url: '/menu/e-wallet',
-      icon: 'home'
+      icon: 'card'
     }, 
     {
       title: 'Products',
       url: '/menu/products',
-      icon: 'home'
+      icon: 'happy'
     }
   ];
 
