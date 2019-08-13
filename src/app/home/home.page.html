@@ -1,7 +1,10 @@
 <ion-header>
   <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
     <ion-title>
-      Welcome {{user.name}} 
+      Welcome {{user.name}}!
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -17,6 +20,6 @@
     </ion-row>
     <ion-row color="secondary" justify-content-center>
       Balance {{user.balance}}
-      </ion-row>
+    </ion-row>
   </ion-grid>
 </ion-content>
