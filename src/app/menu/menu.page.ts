@@ -18,17 +18,43 @@ export class MenuPage implements OnInit {
     },
     {
       title: 'E-Wallet',
-      url: '/menu/e-wallet',
-      icon: 'card'
-    }, 
+      children: [
+        {
+          title: 'Top Up',
+          url: '/menu/e-wallet/topup',
+          icon: 'card'
+        },
+        {
+          title: 'Transaction History',
+          url: '/menu/e-wallet/transaction-history',
+          icon: 'more'
+        }
+      ]
+
+    },
     {
       title: 'Products',
-      url: '/menu/products',
-      icon: 'happy'
+      children: [
+        {
+          title: 'Purchase',
+          url: '/menu/products/purchase',
+          icon: 'heart'
+        },
+        {
+          title: 'My QR',
+          url: '/menu/products/my-qr',
+          icon: 'happy'
+        },
+        {
+          title: 'Transaction History',
+          url: '/menu/products/transaction-history',
+          icon: 'more'
+        }
+      ]
     }
   ];
   constructor(private widgetUtilService: WidgetUtilServiceService,
-    private authService:AuthService) { }
+    private authService: AuthService) { }
 
   ngOnInit() {
   }
