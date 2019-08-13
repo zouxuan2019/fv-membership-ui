@@ -22,6 +22,14 @@
           <ion-label>{{p.title}}</ion-label>
         </ion-item>
       </div>
+      <ion-menu-toggle auto-hide="false">
+          <ion-item (click)="showLogoutPopUp()">
+              <ion-icon slot="start" name="log-out"></ion-icon>
+              <ion-label>
+                Log out
+              </ion-label>
+            </ion-item>
+      </ion-menu-toggle>
     </ion-content>
   </ion-menu>
 

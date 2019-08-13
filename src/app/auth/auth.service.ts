@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { User } from './user';
 import { AuthResponse } from './auth-response';
 import { longStackSupport } from 'q';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,9 @@ export class AuthService {
   AUTH_SERVER_ADDRESS: string = '';
   authSubject = new BehaviorSubject(false);
 
-  constructor(private httpClient: HttpClient, private storage: Storage) { }
+  constructor(private httpClient: HttpClient, private storage: Storage,
+    private router:Router
+    ) { }
 
   register(user: User): Observable<AuthResponse> {
     return this.getAuthResponse(`${this.AUTH_SERVER_ADDRESS}/register`, user);
@@ -49,9 +52,10 @@ export class AuthService {
   }
 
   async logout() {
-    await this.storage.remove("ACCESS_TOKEN");
-    await this.storage.remove("EXPIRES_IN");
+    // await this.storage.remove("ACCESS_TOKEN");
+    // await this.storage.remove("EXPIRES_IN");
     this.authSubject.next(false);
+    this.router.navigateByUrl("login");
   }
 
   isLoggedIn() {

@@ -14,10 +14,11 @@ const routes: Routes = [
     children: [
       { path: 'e-wallet', loadChildren: '../e-wallet/e-wallet.module#EWalletPageModule' },
       { path: 'products', loadChildren: '../products/products.module#ProductsPageModule' },
-     { path: 'home', loadChildren:'../home/home.module#HomePageModule' }
+      { path: 'home', loadChildren: '../home/home.module#HomePageModule' },
+      { path: 'logout', loadChildren: '../logout/logout.module#LogoutPageModule' }
     ]
   }
- 
+
 ];
 
 @NgModule({

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterEvent } from '@angular/router';
+import { WidgetUtilServiceService } from '../widget-util-service.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -25,13 +27,27 @@ export class MenuPage implements OnInit {
       icon: 'happy'
     }
   ];
-
-
-  constructor() { 
-
-  }
+  constructor(private widgetUtilService: WidgetUtilServiceService,
+    private authService:AuthService) { }
 
   ngOnInit() {
+  }
+
+  showLogoutPopUp() {
+    this.widgetUtilService.presentAlertConfirm('Confirm', 'Are you sure you want to log out?', [
+      {
+        text: 'Cancel',
+        role: 'cancel',
+        handler: () => {
+          console.log('Logout Cancelled');
+        }
+      }, {
+        text: 'Okay',
+        handler: async () => {
+          this.authService.logout();
+        }
+      }
+    ])
   }
 
 }
