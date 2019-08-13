@@ -15,6 +15,7 @@
                 </ion-label>
               </ion-item>
         </ion-menu-toggle>
+
         <ion-item button *ngIf="p.children?.length>0" (click)="p.open=!p.open"
           [class.active-parent]="p.open" detail="false">
           <ion-icon slot="start" name="arrow-forward" *ngIf="!p.open"></ion-icon>
@@ -22,7 +23,7 @@
           <ion-label>{{p.title}}</ion-label>
         </ion-item>
         <ion-list *ngIf="p.open">
-            <ion-menu-toggle>
+            <ion-menu-toggle auto-hide="false">
                 <ion-item class="sub-item" *ngFor="let sub of p.children" 
                 [routerDirection]="root" [routerLink]="sub.url" routerLinkActive="active">
                     <ion-icon slot="start" [name]="sub.icon"></ion-icon>
