@@ -1,4 +1,4 @@
-
+<ion-split-pane>
 <ion-menu contentId="content">
     <ion-header>
       <ion-toolbar>
@@ -6,18 +6,8 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <!-- <ion-list>
-        <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-          <ion-item [routerDirection]="root" [routerLink]="p.url" [class.active-item]="selectedPath===p.url">
-            <ion-icon slot="start" [name]="p.icon"></ion-icon>
-            <ion-label>
-              {{p.title}}
-            </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-      </ion-list> -->
       <div *ngFor="let p of appPages">
-        <ion-menu-toggle *ngIf="p.url">
+        <ion-menu-toggle *ngIf="p.url" auto-hide="false">
             <ion-item [routerDirection]="root" [routerLink]="p.url" routerLinkActive="active">
                 <ion-icon slot="start" [name]="p.icon"></ion-icon>
                 <ion-label>
@@ -36,14 +26,5 @@
   </ion-menu>
 
   <ion-router-outlet id="content" main></ion-router-outlet>
-
-<!-- <ion-header>
-    <ion-toolbar>
-      <ion-title>e-menu</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-content>
-  
-  </ion-content> -->
+</ion-split-pane>
   
