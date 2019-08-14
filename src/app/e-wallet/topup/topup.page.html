@@ -3,10 +3,47 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>topup</ion-title>
+    <ion-title>E-Wallet Topup</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <form #form="ngForm" (ngSubmit)="fomopay(form)">
+    <ion-grid>
+      <ion-row justify-content-center>
+        <ion-col padding>
+          Current Balance: S${{user.balance}}
+        </ion-col>
+      </ion-row>
+      <ion-row justify-content-center>
+        <ion-col padding>
+          <ion-label>Topup Amount S$</ion-label>
+          <ion-input name="amount" type="number" placeholder="Enter topup amount" ngModel required></ion-input>
+        </ion-col>
+      </ion-row>
+      <ion-row justify-content-center>
+        <ion-col padding>
+          <ion-label>Description</ion-label>
+          <ion-input name="description" placeholder="Description of the amount" ngModel></ion-input>
+        </ion-col>
+      </ion-row>
+      <ion-row justify-content-center>
+        <ion-col padding>
+          <ion-label>Payment Agent</ion-label>
+          <ion-select>
+            <ion-select-option value="fomo" selected>FOMO Pay</ion-select-option>
+          </ion-select>
+        </ion-col>
+      </ion-row>
+      <ion-row justify-content-center>
+        <ion-col padding>
 
+          <ion-button size="small" type="submit" [disabled]="form.invalid" expand="block">Submit</ion-button>
+
+        </ion-col>
+
+      </ion-row>
+
+    </ion-grid>
+  </form>
 </ion-content>

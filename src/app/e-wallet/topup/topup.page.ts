@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TopupBo } from './topup-bo';
 
 @Component({
   selector: 'app-topup',
@@ -7,9 +8,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TopupPage implements OnInit {
 
+  user: any = { name: 'Zou Xuan', balance: 100 };
   constructor() { }
 
   ngOnInit() {
   }
+
+  fomopay(form) {
+    console.log(form.value);
+
+  }
+
+  transferToFomo(topup: TopupBo) {
+
+  }
+
+
 
 }
