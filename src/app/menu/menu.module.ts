@@ -17,8 +17,7 @@ const routes: Routes = [
       { path: 'products/purchase', loadChildren: '../products/purchase/purchase.module#PurchasePageModule' },
       { path: 'products/my-qr', loadChildren: '../products/my-qr/my-qr.module#MyQrPageModule' },
       { path: 'products/transaction-history', loadChildren: '../products/transaction-history/transaction-history.module#TransactionHistoryPageModule' },
-      { path: 'home', loadChildren: '../home/home.module#HomePageModule' },
-      { path: 'logout', loadChildren: '../logout/logout.module#LogoutPageModule' }
+      { path: 'home', loadChildren: '../home/home.module#HomePageModule' }
     ]
   }
 
