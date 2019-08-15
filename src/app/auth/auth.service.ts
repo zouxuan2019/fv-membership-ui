@@ -38,6 +38,7 @@ export class AuthService {
     //     }
     //   })
     // ); 
+    localStorage.setItem('ACCESS_TOKEN',"aa");
     return new Observable(observer => {
       const res:AuthResponse={
         id:1,
