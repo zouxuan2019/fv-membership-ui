@@ -6,4 +6,5 @@
 - ionic serve
 
 # Check in different platform
+- npm install --save-dev @ionic/lab
 - ionic lab
