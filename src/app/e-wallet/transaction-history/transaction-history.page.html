@@ -3,10 +3,26 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>e-wallet transaction-history</ion-title>
+    <ion-title>E-Wallet Transaction History</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+<ion-grid>
+  <ion-row>
+    <ion-col *ngFor="let his of history" size="12" size-sm="6" size-md="4" size-lg="4">
+      <ion-card>
+        <ion-card-header>
+          {{his.source}}
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item>Amount: ${{his.amount}}</ion-item>
+          <ion-item>Action Date: {{his.actionDate}}</ion-item>
+          <ion-item>Status: {{his.status}}</ion-item>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>
 
 </ion-content>
