@@ -39,3 +39,7 @@ ion-button{
     --background: #28A745;
     --color: #c0d1ec;
 }
+
+.ion-invalid.ion-touched ion-label{
+    color:var(--ion-color-danger);
+}
