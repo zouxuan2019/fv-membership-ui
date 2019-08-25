@@ -10,15 +10,15 @@ import { NgForm } from '@angular/forms';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private authService:AuthService, private router:Router) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
   }
 
-  login(form:NgForm){
+  login(form: NgForm) {
     this.authService.login(form.value).subscribe(
-      (res)=>{
-        this.router.navigateByUrl("menu/home");
+      (res) => {
+        this.router.navigateByUrl('menu/home');
       }
     );
   }

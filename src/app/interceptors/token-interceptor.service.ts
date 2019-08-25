@@ -13,13 +13,12 @@ import {
   Router
 } from '@angular/router';
 import { WidgetUtilServiceService } from '../widget-util-service.service';
+import { Plugins } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TokenInterceptorService {
-
-
+export class TokenInterceptorService implements HttpInterceptor {
   constructor(private router: Router, public widgetUtilServiceService: WidgetUtilServiceService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -46,16 +45,23 @@ export class TokenInterceptorService {
   }
 
   _setHeaderToken(request: HttpRequest<any>) {
-    //const token = this.storage.getItem('ACCESS_TOKEN');
-    const token = '';
-    if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `bearer ${token}`
-        }
-      });
-    }
+    const authData = Plugins.Storage.get({ key: 'authData' });
+    authData.then(au => {
+      const authDataObj = JSON.parse(au.value);
+      if (authDataObj) {
+        const token = authDataObj.access_token;
+        request = request.clone({
+          setHeaders: {
+            Authorization: `bearer ${token}`
+          }
+        });
+      }
+    }).catch((e) => {
+      console.log(e);
+    });
+
   }
+
 
   _setHeaderContentType(request: HttpRequest<any>) {
     if (!request.headers.has('Content-Type')) {

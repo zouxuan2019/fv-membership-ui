@@ -11,14 +11,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthModule } from './auth/auth.module';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { TokenInterceptorService } from './interceptors/token-interceptor.service'
+import { TokenInterceptorService } from './interceptors/token-interceptor.service';
+
 
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
-  AuthModule],
+  imports: [BrowserModule, IonicModule.forRoot(),
+     AppRoutingModule, AuthModule, HttpClientModule],
   providers: [
     StatusBar,
     SplashScreen,

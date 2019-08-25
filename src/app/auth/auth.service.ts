@@ -4,9 +4,8 @@ import { tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from './user';
 import { AuthResponse } from './auth-response';
-import { longStackSupport } from 'q';
 import { Router } from '@angular/router';
-// import {Plugins} from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
@@ -39,33 +38,21 @@ export class AuthService {
     return this.httpClient.post<AuthResponse>(`${url}`, body.toString(), header).pipe(
       tap(async (res: AuthResponse) => {
         if (res.access_token) {
-          // this.storeUserAuthData(res);
-          console.log(res.access_token);
+          this.storeUserAuthData(res);
         }
           this.authSubject.next(true);
         }
       )
     );
-    // localStorage.setItem('ACCESS_TOKEN',"aaaaaaa");
-    // console.log(localStorage.getItem('ACCESS_TOKEN'));
-    // return new Observable(observer => {
-    //   const res: AuthResponse ={
-    //     access_token: 'token',
-    //     expires_in: 12345
-    //   };
-    //   observer.next(res);
-    //   observer.complete();
-    // });
   }
 
-//   storeUserAuthData(authResponse) {
-// const data = JSON.stringify(authResponse);
-//     Plugins.Storage.set({ key: 'authData', value: data});
-//   }
+  storeUserAuthData(authResponse) {
+   const data = JSON.stringify(authResponse);
+    Plugins.Storage.set({ key: 'authData', value: data});
+  }
 
   async logout() {
-    // await this.storage.remove("ACCESS_TOKEN");
-    // await this.storage.remove("EXPIRES_IN");
+    Plugins.Storage.remove({ key: 'authData'});
     this.authSubject.next(false);
     this.router.navigateByUrl('login');
   }
