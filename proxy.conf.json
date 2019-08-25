@@ -1,0 +1,11 @@
+{
+    "/proxy/auth":{
+        "target":"https://localhost:7001/",
+        "changeOrigin":true,
+        "secure":false,
+        "logLevel":"debug",
+        "pathRewrite": {
+            "^/proxy/auth": ""
+          }
+    }
+}

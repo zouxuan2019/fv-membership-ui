@@ -17,9 +17,10 @@ import { WidgetUtilServiceService } from '../widget-util-service.service';
 @Injectable({
   providedIn: 'root'
 })
-export class TokenInterceptorService implements HttpInterceptor {
+export class TokenInterceptorService {
 
-  constructor(private router: Router, public widgetUtilServiceService: WidgetUtilServiceService, private storage: Storage) { }
+
+  constructor(private router: Router, public widgetUtilServiceService: WidgetUtilServiceService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this._setHeaderToken(request);
@@ -45,13 +46,14 @@ export class TokenInterceptorService implements HttpInterceptor {
   }
 
   _setHeaderToken(request: HttpRequest<any>) {
-    const token = localStorage.getItem('ACCESS_TOKEN');
+    //const token = this.storage.getItem('ACCESS_TOKEN');
+    const token = '';
     if (token) {
       request = request.clone({
         setHeaders: {
-          'Authorization': `bearer ${token}`
+          Authorization: `bearer ${token}`
         }
-      })
+      });
     }
   }
 
