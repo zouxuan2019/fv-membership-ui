@@ -18,8 +18,8 @@ export class PurchasePage implements OnInit {
   }
 
   decreaseQty(item: Product) {
-    if (item.quantity - 1 < 1) {
-      item.quantity = 1;
+    if (item.quantity - 1 <= 0) {
+      item.quantity = 0;
     } else {
       item.quantity -= 1;
     }
