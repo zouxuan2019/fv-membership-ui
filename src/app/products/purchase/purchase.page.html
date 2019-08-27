@@ -17,20 +17,45 @@
       <ion-thumbnail item-start>
         <img src="assets/icon/juice.png">
       </ion-thumbnail>
-      
+      <ion-label>
       <h2>{{item.name}}</h2>
-      <h3>Price:{{item.price}}</h3>
-      <button clear (click)="incrementQty(item)"><ion-icon name="add-circle" ></ion-icon></button>{{item.quantity}}
-      <button clear (click)="decrementQty(item)"><ion-icon name="remove-circle" ></ion-icon></button>
+      <p>Price:{{item.price}}</p>
+      </ion-label>
+  
+      <button clear (click)="decrementQty(item)">
+        <ion-icon name="remove-circle-outline" ></ion-icon>
+      </button>
+      {{item.quantity}}
+      <button clear (click)="incrementQty(item)">
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </button>
       
     </ion-item>
   </ion-list>
+  <!-- <ion-button color="primary"expand="full" fill="outline">
+      <ion-label>
+          Add To Cart
+        </ion-label>
+    </ion-button>   
+  <ion-button color="primary" shape="round">
+      <ion-label>
+          
+      </ion-label>
+    </ion-button> -->
   </ion-card>
 
   <ion-footer>
-    <ion-toolbar>
-        <button ion-button outline>Add To Cart</button>   
-        <button ion-button outline>Purchase</button>
-    </ion-toolbar>
-  </ion-footer>
-</ion-content>
+      
+         
+         <div class="footer_bar"> 
+           
+            <div class="cart" (click)="cancel()">
+                Add To Cart
+            </div>
+            <div class="submit" (click)="dismiss()">
+                Purchase
+              </div>
+           </div>
+           
+      
+    </ion-footer>
