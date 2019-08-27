@@ -1,0 +1,63 @@
+
+ion-item {
+    --background: #fff;
+    --color: #0e0f0f;
+}
+.item.sc-ion-label-md-h, .item .sc-ion-label-md-h {
+    padding-inline-start: 3em;
+}
+button[_ngcontent-fbs-c2] {
+    border: none;
+    border-radius: 20;
+    font-family: inherit;
+    font-style: inherit;
+    font-variant: inherit;
+    line-height: 1;
+    text-transform: none;
+    cursor: pointer;
+    -webkit-appearance: button;
+}
+button {    
+    
+    background-color: white;
+    border:none;
+    box-sizing: 0;
+    padding: 1px 6px;
+    border-width: 0px;
+    border-style: none;
+    border-color: none;
+    border-image: none;
+}
+
+.footer_bar{
+    // display: block;
+     display: flex;
+     .cart{
+          flex:1;
+         float:top;
+         height:2.4rem;
+         line-height: 2.4rem;
+         text-align: center;
+         color:#fff;
+         background: #488aff;
+         font-size: 1.2rem;
+         display: block;
+ 
+     }
+     .submit{
+         flex:1;
+         height:2.4rem;
+         line-height: 2.4rem;
+         text-align: center;
+         color:#fff;
+         background: #27B6AF;
+         font-size: 1.2rem;
+         display: block;
+     }
+     
+ }
+ 
+
+
+ 
+       
