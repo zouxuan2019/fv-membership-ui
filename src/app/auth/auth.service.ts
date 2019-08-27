@@ -34,13 +34,12 @@ export class AuthService {
     const header = {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     };
-    // return this.httpClient.post<AuthResponse>(`${url}`, body.toString(), header);
     return this.httpClient.post<AuthResponse>(`${url}`, body.toString(), header).pipe(
       tap(async (res: AuthResponse) => {
         if (res.access_token) {
           this.storeUserAuthData(res);
         }
-          this.authSubject.next(true);
+        this.authSubject.next(true);
         }
       )
     );
@@ -48,7 +47,7 @@ export class AuthService {
 
   storeUserAuthData(authResponse) {
    const data = JSON.stringify(authResponse);
-    Plugins.Storage.set({ key: 'authData', value: data});
+   Plugins.Storage.set({ key: 'authData', value: data});
   }
 
   async logout() {

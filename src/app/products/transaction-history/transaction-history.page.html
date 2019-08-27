@@ -8,19 +8,19 @@
 </ion-header>
 
 <ion-content>
-    <ion-list>
-      <ion-item *ngFor="let his of history" >
-          <ion-card>
-            <ion-card-header>
-              {{his.product}}
-            </ion-card-header>
-            <ion-card-content>
-              <ion-item>Amount: ${{his.amount}}</ion-item>
-              <ion-item>Date: {{his.date}}</ion-item>
-              <ion-item>Quantity: {{his.quantity}}</ion-item>
-            </ion-card-content>
-          </ion-card>
-        </ion-item>
-    </ion-list>
-    
-    </ion-content>
+  <ion-list>
+    <ion-item *ngFor="let his of history">
+      <ion-card>
+        <ion-card-header>
+          {{his.product}}
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item>Amount: ${{his.amount}}</ion-item>
+          <ion-item>Date: {{his.date}}</ion-item>
+          <ion-item>Quantity: {{his.quantity}}</ion-item>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
