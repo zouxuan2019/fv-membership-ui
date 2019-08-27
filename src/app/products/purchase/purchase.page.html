@@ -22,11 +22,11 @@
           <p>Price:{{item.price}}</p>
         </ion-label>
 
-        <button clear (click)="decrementQty(item)">
+        <button clear (click)="decreaseQty(item)">
           <ion-icon name="remove-circle-outline"></ion-icon>
         </button>
         {{item.quantity}}
-        <button clear (click)="incrementQty(item)">
+        <button clear (click)="increaseQty(item)">
           <ion-icon name="add-circle-outline"></ion-icon>
         </button>
 

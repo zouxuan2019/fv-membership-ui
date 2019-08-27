@@ -13,15 +13,11 @@ export class PurchasePage implements OnInit {
     { name: 'Orange Juice', price: '$2', quantity: 0 },
     { name: 'Orange Juice', price: '$4', quantity: 0 }];
 
-
-  // increment product qty
-  incrementQty(item) {
-
+  increaseQty(item: Product) {
     item.quantity += 1;
   }
 
-  // decrement product qty
-  decrementQty(item) {
+  decreaseQty(item: Product) {
     if (item.quantity - 1 < 1) {
       item.quantity = 1;
     } else {
@@ -37,7 +33,7 @@ export class PurchasePage implements OnInit {
     console.log('ionViewDidLoad PurchasePage');
   }
   ionViewWillEnter() {
-     // this.getLeftCateData();
+    // this.getLeftCateData();
 
   }
 
