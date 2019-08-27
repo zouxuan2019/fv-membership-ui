@@ -8,5 +8,29 @@
 </ion-header>
 
 <ion-content>
+    <ion-card>
+        <ion-card-header>
+          Product List
+        </ion-card-header>
+  <ion-list>
+    <ion-item *ngFor="let item of items">
+      <ion-thumbnail item-start>
+        <img src="assets/icon/juice.png">
+      </ion-thumbnail>
+      
+      <h2>{{item.name}}</h2>
+      <h3>Price:{{item.price}}</h3>
+      <button clear (click)="incrementQty(item)"><ion-icon name="add-circle" ></ion-icon></button>{{item.quantity}}
+      <button clear (click)="decrementQty(item)"><ion-icon name="remove-circle" ></ion-icon></button>
+      
+    </ion-item>
+  </ion-list>
+  </ion-card>
 
+  <ion-footer>
+    <ion-toolbar>
+        <button ion-button outline>Add To Cart</button>   
+        <button ion-button outline>Purchase</button>
+    </ion-toolbar>
+  </ion-footer>
 </ion-content>

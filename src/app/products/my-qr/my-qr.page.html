@@ -8,5 +8,42 @@
 </ion-header>
 
 <ion-content>
-
+  <ion-list>
+    <ion-item *ngFor="let item of items">
+    <ion-card>
+        <img src="assets/qr.png" height='200' width='120'/>
+        <ion-card-content>
+          <ion-card-title>
+           {{item.product}}
+            </ion-card-title>
+          <p>
+            Quantity: {{item.quantity}}            
+          </p>
+          <p>
+            Expiry Date: {{item.expiryDate}}
+          </p>
+        </ion-card-content>
+        <ion-row no-padding>
+            <ion-col>
+              <button ion-button clear color="danger" icon-start>
+                <ion-icon name='arrow-up'></ion-icon>
+                Topup
+              </button>
+            </ion-col>
+            <ion-col text-center>
+              <button ion-button clear color="danger" icon-start>
+                <ion-icon name='share'></ion-icon>
+                Share
+              </button>
+            </ion-col>
+            <ion-col text-right>
+              <button ion-button clear color="danger" icon-start>
+                <ion-icon name='refresh'></ion-icon>
+                Regenerate
+              </button>
+            </ion-col>
+          </ion-row>
+      </ion-card>
+    </ion-item>
+    </ion-list>
 </ion-content>
