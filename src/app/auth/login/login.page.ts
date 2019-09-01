@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { NgForm } from '@angular/forms';
 import { Platform } from '@ionic/angular';
@@ -18,8 +18,8 @@ export class LoginPage implements OnInit {
 
   login(form: NgForm) {
     this.authService.login(form.value).subscribe(
-      (res) => {
-        this.router.navigateByUrl('menu/home');
+      () => {
+        this.routeToHome(form.value.email);
       }
     );
   }
@@ -36,6 +36,15 @@ export class LoginPage implements OnInit {
   }
 
   loginWithBrowerFacebook() {
-    alert('browser');
+    this.routeToHome('browser');
+  }
+
+  routeToHome(userName: string) {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        user: userName
+      }
+    };
+    this.router.navigate(['menu/home'], navigationExtras);
   }
 }
