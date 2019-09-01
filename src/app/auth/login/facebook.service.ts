@@ -35,17 +35,11 @@ export class FacebookService {
     return new Promise((resolve, reject) => {
       FB.getLoginStatus((statusRes) => {
         if (statusRes.status === 'connected') {
-          FB.api('/me', { fields: 'id,name,email,picture' }, async (userRes) => {
-            const user: User = { name: userRes.name, email: userRes.email, password: '' };
-            resolve(user);
-          });
+          this.getCurrentUserInfoFromFB(resolve);
         } else {
           FB.login((response) => {
             if (response.status === 'connected') {
-              FB.api('/me', { fields: 'id,name,email,picture' }, async (userRes) => {
-                const user: User = { name: userRes.name, email: userRes.email, password: '' };
-                resolve(user);
-              });
+              this.getCurrentUserInfoFromFB(resolve);
             } else {
               reject('login failed');
             }
@@ -55,14 +49,21 @@ export class FacebookService {
     });
   }
 
+  private getCurrentUserInfoFromFB(resolve) {
+    FB.api('/me', {fields: 'id,name,email,picture'}, async (userRes) => {
+      const user: User = {name: userRes.name, email: userRes.email, password: ''};
+      resolve(user);
+    });
+  }
+
   initialFacebookSdkJs() {
-    (function (d, s, id) {
+    (((d, s, id) => {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) { return; }
       js = d.createElement(s); js.id = id;
       js.src = '//connect.facebook.net/en_US/sdk.js';
       fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+    })(document, 'script', 'facebook-jssdk'));
 
 
     window.fbAsyncInit = () => {
