@@ -47,6 +47,7 @@
       <ion-row>
         <ion-col size-md="6" offset-md="3" size="12">
           <ion-button type="submit" [disabled]="form.invalid" expand="block">Login</ion-button>
+          <ion-button id="facebookLogin" expand="block" (click)="loginWithFacebook()">Login me in with Facebook</ion-button>
         </ion-col>
       </ion-row>
       <ion-row>

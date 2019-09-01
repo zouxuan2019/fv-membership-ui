@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { NgForm } from '@angular/forms';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { NgForm } from '@angular/forms';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private platform: Platform) { }
 
   ngOnInit() {
   }
@@ -22,5 +23,19 @@ export class LoginPage implements OnInit {
       }
     );
   }
+  loginWithFacebook() {
+    if (this.platform.is('cordova')) {
+      this.loginWithNativeFacebook();
+    } else {
+      this.loginWithBrowerFacebook();
+    }
+  }
 
+  loginWithNativeFacebook() {
+    alert('native');
+  }
+
+  loginWithBrowerFacebook() {
+    alert('browser');
+  }
 }
