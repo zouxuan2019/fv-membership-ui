@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { NgForm } from '@angular/forms';
-import { Platform } from '@ionic/angular';
+import { FacebookService } from './facebook.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +11,11 @@ import { Platform } from '@ionic/angular';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router, private platform: Platform) { }
+  constructor(private authService: AuthService, private router: Router, private facebookService: FacebookService) {
+    if (facebookService.isLoadFacebookSdkJs()) {
+      facebookService.initialFacebookSdkJs();
+    }
+  }
 
   ngOnInit() {
   }
@@ -23,20 +27,13 @@ export class LoginPage implements OnInit {
       }
     );
   }
+
   loginWithFacebook() {
-    if (this.platform.is('cordova')) {
-      this.loginWithNativeFacebook();
+    if (!this.facebookService.isLoadFacebookSdkJs()) {
+      this.facebookService.loginWithNativeFacebook();
     } else {
-      this.loginWithBrowerFacebook();
+      this.facebookService.loginWithBrowerFacebook();
     }
-  }
-
-  loginWithNativeFacebook() {
-    alert('native');
-  }
-
-  loginWithBrowerFacebook() {
-    this.routeToHome('browser');
   }
 
   routeToHome(userName: string) {
