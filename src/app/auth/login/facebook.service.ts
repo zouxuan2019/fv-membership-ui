@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
+import { User } from '../user';
+import { AuthResponse } from '../auth-response';
 
 declare var window: any;
 declare var FB: any;
@@ -15,18 +17,42 @@ export class FacebookService {
     return !(this.platform.is('cordova'));
   }
 
-  loginWithNativeFacebook() {
+  loginWithNativeFacebook(): Promise<User> {
     alert('native');
+    return new Promise(resolve => { resolve(null); });
   }
 
-  loginWithBrowerFacebook() {
-    FB.login((response) => {
-      if (response.status === 'connected') {
-        FB.api('/me?fields=email,name', (userRes) => {
-          console.log('Good to see you, ' + userRes.name + '.');
-        });
-      }
-    }, { scope: 'public_profile,email' });
+
+  loginWithFacebook(): Promise<User> {
+    if (!this.isLoadFacebookSdkJs()) {
+      return this.loginWithNativeFacebook();
+    } else {
+      return this.loginWithBrowerFacebook();
+    }
+  }
+
+  loginWithBrowerFacebook(): Promise<User> {
+    return new Promise((resolve, reject) => {
+      FB.getLoginStatus((statusRes) => {
+        if (statusRes.status === 'connected') {
+          FB.api('/me', { fields: 'id,name,email,picture' }, async (userRes) => {
+            const user: User = { name: userRes.name, email: userRes.email, password: '' };
+            resolve(user);
+          });
+        } else {
+          FB.login((response) => {
+            if (response.status === 'connected') {
+              FB.api('/me', { fields: 'id,name,email,picture' }, async (userRes) => {
+                const user: User = { name: userRes.name, email: userRes.email, password: '' };
+                resolve(user);
+              });
+            } else {
+              reject('login failed');
+            }
+          });
+        }
+      });
+    });
   }
 
   initialFacebookSdkJs() {

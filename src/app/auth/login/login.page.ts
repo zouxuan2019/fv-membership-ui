@@ -3,6 +3,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { NgForm } from '@angular/forms';
 import { FacebookService } from './facebook.service';
+import { User } from '../user';
 
 @Component({
   selector: 'app-login',
@@ -29,12 +30,15 @@ export class LoginPage implements OnInit {
   }
 
   loginWithFacebook() {
-    if (!this.facebookService.isLoadFacebookSdkJs()) {
-      this.facebookService.loginWithNativeFacebook();
-    } else {
-      this.facebookService.loginWithBrowerFacebook();
-    }
+    const res = this.facebookService.loginWithFacebook();
+    res.then(user => {
+      this.routeToHome(user.name);
+    }).catch(err => {
+      console.log(err);
+    });
+
   }
+
 
   routeToHome(userName: string) {
     const navigationExtras: NavigationExtras = {
