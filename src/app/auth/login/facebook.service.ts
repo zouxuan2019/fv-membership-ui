@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { User } from '../user';
-import { AuthResponse } from '../auth-response';
+import { NativeFacebookService } from './native-facebook.service';
+
 
 declare var window: any;
 declare var FB: any;
@@ -11,21 +12,16 @@ declare var FB: any;
 })
 export class FacebookService {
 
-  constructor(private platform: Platform) { }
+  constructor(private platform: Platform, private nativeFacebookService: NativeFacebookService) { }
 
   isLoadFacebookSdkJs() {
     return !(this.platform.is('cordova'));
   }
 
-  loginWithNativeFacebook(): Promise<User> {
-    alert('native');
-    return new Promise(resolve => { resolve(null); });
-  }
-
-
   loginWithFacebook(): Promise<User> {
+    return this.nativeFacebookService.loginWithNativeFacebook();
     if (!this.isLoadFacebookSdkJs()) {
-      return this.loginWithNativeFacebook();
+      return this.nativeFacebookService.loginWithNativeFacebook();
     } else {
       return this.loginWithBrowerFacebook();
     }
@@ -37,8 +33,8 @@ export class FacebookService {
         if (statusRes.status === 'connected') {
           this.getCurrentUserInfoFromFB(resolve);
         } else {
-          FB.login((response) => {
-            if (response.status === 'connected') {
+          FB.login((loginRes) => {
+            if (loginRes.status === 'connected') {
               this.getCurrentUserInfoFromFB(resolve);
             } else {
               reject('login failed');
@@ -50,15 +46,15 @@ export class FacebookService {
   }
 
   private getCurrentUserInfoFromFB(resolve) {
-    FB.api('/me', {fields: 'id,name,email,picture'}, async (userRes) => {
-      const user: User = {name: userRes.name, email: userRes.email, password: ''};
+    FB.api('/me', { fields: 'id,name,email,picture' }, (userRes) => {
+      const user: User = { name: userRes.name, email: userRes.email, password: '' };
       resolve(user);
     });
   }
 
   initialFacebookSdkJs() {
     (((d, s, id) => {
-      var js, fjs = d.getElementsByTagName(s)[0];
+      let js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) { return; }
       js = d.createElement(s); js.id = id;
       js.src = '//connect.facebook.net/en_US/sdk.js';
@@ -67,7 +63,7 @@ export class FacebookService {
 
 
     window.fbAsyncInit = () => {
-      console.log('fb async init')
+      console.log('fb async init');
       FB.init({
         appId: '509258982951178',
         autoLogAppEvents: true,

@@ -12,17 +12,18 @@ import { AuthModule } from './auth/auth.module';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptorService } from './interceptors/token-interceptor.service';
-
+import { Facebook } from '@ionic-native/facebook/ngx';
 
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(),
-     AppRoutingModule, AuthModule, HttpClientModule],
+    AppRoutingModule, AuthModule, HttpClientModule],
   providers: [
     StatusBar,
     SplashScreen,
+    Facebook,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
       provide: HTTP_INTERCEPTORS,
@@ -32,4 +33,4 @@ import { TokenInterceptorService } from './interceptors/token-interceptor.servic
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

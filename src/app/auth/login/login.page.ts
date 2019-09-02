@@ -3,7 +3,6 @@ import { Router, NavigationExtras } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { NgForm } from '@angular/forms';
 import { FacebookService } from './facebook.service';
-import { User } from '../user';
 
 @Component({
   selector: 'app-login',

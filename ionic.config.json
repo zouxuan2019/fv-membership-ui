@@ -1,5 +1,8 @@
 {
   "name": "fv-memebership-ui",
-  "integrations": {},
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
   "type": "angular"
 }
