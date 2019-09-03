@@ -19,7 +19,6 @@ export class FacebookService {
   }
 
   loginWithFacebook(): Promise<User> {
-    return this.nativeFacebookService.loginWithNativeFacebook();
     if (!this.isLoadFacebookSdkJs()) {
       return this.nativeFacebookService.loginWithNativeFacebook();
     } else {
