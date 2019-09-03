@@ -10,7 +10,6 @@ export class NativeFacebookService {
   constructor(private facebook: Facebook) { }
 
   loginWithNativeFacebook(): Promise<User> {
-    console.log('hello world');
     this.facebook.logEvent(this.facebook.EVENTS.EVENT_NAME_ADDED_TO_CART);
     return new Promise((resolve, reject) => {
       this.facebook.getLoginStatus().then(statusRes => {
