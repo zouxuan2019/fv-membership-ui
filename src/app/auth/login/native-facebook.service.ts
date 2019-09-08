@@ -14,11 +14,11 @@ export class NativeFacebookService {
     return new Promise((resolve, reject) => {
       this.facebook.getLoginStatus().then(statusRes => {
         if (statusRes.status === 'connected') {
-          this.getCurrentUserInfoFromFB(resolve);
+          this.getCurrentUserInfoFromFB(resolve, statusRes.authResponse.accessToken);
         } else {
-          this.facebook.login(['public_profile', 'email']).then((response: FacebookLoginResponse) => {
-            if (response.status === 'connected') {
-              this.getCurrentUserInfoFromFB(resolve);
+          this.facebook.login(['email','public_profile']).then((loginRes: FacebookLoginResponse) => {
+            if (loginRes.status === 'connected') {
+              this.getCurrentUserInfoFromFB(resolve, loginRes.authResponse.accessToken);
             } else {
               reject('login failed');
             }
@@ -28,9 +28,9 @@ export class NativeFacebookService {
     });
   }
 
-  private getCurrentUserInfoFromFB(resolve) {
-    this.facebook.api('/me', ['public_profile', 'email']).then(userRes => {
-      const user: User = { name: userRes.name, email: userRes.email, password: '' };
+  private getCurrentUserInfoFromFB(resolve, token: string) {
+    this.facebook.api('/me', ['email','public_profile']).then(userRes => {
+      const user: User = { name: userRes.name, email: userRes.email, password: '', accessToken: token };
       resolve(user);
     });
   }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Plugins } from '@capacitor/core';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class HomePage {
         this.user.name = this.router.getCurrentNavigation().extras.state.user;
       }
     });
+    Plugins.Storage.get({ key: 'authData' }).then(x => alert(x.value));
   }
 
 }
