@@ -40,6 +40,12 @@ export class PurchasePage implements OnInit {
   ionViewWillLeave() {
     console.log('ionViewWillLeave PurchasePage');
   }
+  cancel() {
+    console.log('cancel');
+  }
+  dismiss() {
+    console.log('dismiss');
+  }
 }
 
 
