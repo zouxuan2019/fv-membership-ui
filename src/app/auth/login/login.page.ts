@@ -19,8 +19,12 @@ export class LoginPage implements OnInit {
 
   login(form: NgForm) {
     this.authService.login(form.value).subscribe(
-      () => {
-        this.routeToHome(form.value.email);
+      (res) => {
+        if (res.access_token) {
+          this.routeToHome(form.value.email);
+        } else {
+          alert('Some error happened');
+        }
       }
     );
   }

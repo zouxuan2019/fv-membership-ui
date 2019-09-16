@@ -1,6 +1,6 @@
 {
     "/proxy/auth":{
-        "target":"https://localhost:7001/",
+        "target":"https://fvmembership-auth.appspot.com",
         "changeOrigin":true,
         "secure":false,
         "logLevel":"debug",

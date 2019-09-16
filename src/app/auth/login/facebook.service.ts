@@ -14,12 +14,12 @@ export class FacebookService {
 
   constructor(private platform: Platform, private nativeFacebookService: NativeFacebookService) { }
 
-  isLoadFacebookSdkJs() {
-    return !(this.platform.is('cordova'));
+  isPlatformCordova() {
+    return this.platform.is('cordova');
   }
 
   loginWithFacebook(): Promise<User> {
-    if (!this.isLoadFacebookSdkJs()) {
+    if (this.isPlatformCordova()) {
       return this.nativeFacebookService.loginWithNativeFacebook();
     } else {
       return this.loginWithBrowerFacebook();

@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptorService } from './interceptors/token-interceptor.service';
 import { Facebook } from '@ionic-native/facebook/ngx';
+import { HTTP } from '@ionic-native/http/ngx';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { Facebook } from '@ionic-native/facebook/ngx';
     SplashScreen,
     Facebook,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    HTTP,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,

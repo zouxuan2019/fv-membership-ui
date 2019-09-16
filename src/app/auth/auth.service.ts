@@ -7,29 +7,36 @@ import { AuthResponse } from './auth-response';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
 import { FacebookService } from './login/facebook.service';
+import { HTTP } from '@ionic-native/http/ngx';
+import { fromPromise } from 'rxjs/observable/fromPromise';
+import { UrlFactoryService } from '../url-factory.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   authSubject = new BehaviorSubject(false);
+  isCordova: boolean;
 
-  constructor(private httpClient: HttpClient, private router: Router, private facebookService: FacebookService) {
-    if (facebookService.isLoadFacebookSdkJs()) {
+  constructor(private httpClient: HttpClient, private nativeHttp: HTTP, private router: Router, private facebookService: FacebookService
+    , private urlFactoryService: UrlFactoryService) {
+    if (facebookService.isPlatformCordova()) {
+      this.isCordova = true;
+    } else {
       facebookService.initialFacebookSdkJs();
     }
   }
 
   register(user: User): Observable<AuthResponse> {
-    return this.getAuthResponse(`register`, user);
+    return this.getAuthResponse('register', user);
   }
 
   login(user: User): Observable<AuthResponse> {
-    return this.getAuthResponse('/proxy/auth/connect/token', user);
+    return this.getAuthResponse(`${this.urlFactoryService.getUrl(this.isCordova, 'auth')}/connect/token`, user);
   }
 
   loginWithFacebook(): Observable<AuthResponse> {
-    const url = '/proxy/auth/ExchangeToken/jwt';
+    const url = `${this.urlFactoryService.getUrl(this.isCordova, 'auth')}/ExchangeToken/jwt`;
     const res = this.facebookService.loginWithFacebook();
     return new Observable(observer => {
       res.then(user => {
@@ -44,7 +51,14 @@ export class AuthService {
   }
 
   getAuthResponse(url: string, user: User): Observable<AuthResponse> {
-    console.log(url);
+    if (this.isCordova) {
+      return this.getTokenForNativeDevices(url, user);
+    } else {
+      return this.getTokenForWebsite(url, user);
+    }
+  }
+
+  getTokenForWebsite(url: string, user: User): Observable<AuthResponse> {
     const body = new HttpParams()
       .set('grant_type', 'password')
       .set('client_id', 'FvMembershipClientId')
@@ -55,15 +69,21 @@ export class AuthService {
     const header = {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     };
-    return this.httpClient.post<AuthResponse>(`${url}`, body.toString(), header)
-      .pipe(tap(async (res: AuthResponse) => {
-        if (res.access_token) {
-          await this.storeUserAuthData(res);
-        }
-        this.authSubject.next(true);
-      }
-      )
-      );
+    return this.getTokenFromWebHttp(url, body, header);
+  }
+
+  getTokenForNativeDevices(url: string, user: User): Observable<AuthResponse> {
+    const header = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    const data = {
+      grant_type: 'password',
+      client_id: 'FvMembershipClientId',
+      client_secret: 'FvMembershipClientSecret',
+      scope: 'FvMembership',
+      username: user.email,
+      password: user.password
+    };
+    this.nativeHttp.setDataSerializer('urlencoded');
+    return this.getTokenFromNativeHttp(url, data, header);
   }
 
   getAuthResponseForSocialMedia(url: string, source: string, token: string): Observable<AuthResponse> {
@@ -72,25 +92,49 @@ export class AuthService {
       Source: source,
       Token: token
     };
-    const header = {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
-    };
-    try {
-      return this.httpClient.post<AuthResponse>(`${url}`, JSON.stringify(body), header).pipe(
-        tap(async (res: AuthResponse) => {
-          if (res.access_token) {
-            console.log(res.access_token);
-            await this.storeUserAuthData(res);
-          } else {
-            console.log('no response');
-          }
-          this.authSubject.next(true);
-        }
-        )
-      );
-    } catch (ex) {
-      console.log(ex);
+    if (this.isCordova) {
+      const header = { 'Content-Type': 'application/json' };
+      this.nativeHttp.setDataSerializer('json');
+      return this.getTokenFromNativeHttp(url, body, header);
+    } else {
+      const header = {
+        headers: new HttpHeaders().set('Content-Type', 'application/json')
+      };
+      return this.getTokenFromWebHttp(url, body, header);
     }
+  }
+
+  private getTokenFromWebHttp(url: string, body: any, header: {
+    headers?: HttpHeaders | { [header: string]: string | string[]; };
+  }): Observable<AuthResponse> {
+    const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
+    return this.httpClient.post<AuthResponse>(`${url}`, data, header)
+      .pipe(tap(async (res: AuthResponse) => {
+        if (res.access_token) {
+          await this.storeUserAuthData(res);
+        }
+        this.authSubject.next(true);
+      }));
+  }
+
+  private getTokenFromNativeHttp(url: string, data, header): Observable<AuthResponse> {
+    const responseData = this.nativeHttp.post(url, data, header).then(async (res) => {
+      console.log(res);
+      if (res.status === 200) {
+        const jsonData = JSON.parse(res.data);
+        const authRes: AuthResponse = { access_token: jsonData.access_token, expires_at: null, expires_in: jsonData.expores_in };
+        await this.storeUserAuthData(authRes);
+        this.authSubject.next(true);
+        return authRes;
+      } else {
+        alert(JSON.stringify(res));
+        return null;
+      }
+    }).catch(err => {
+      console.log(err);
+      return null;
+    });
+    return fromPromise(responseData);
   }
 
   async storeUserAuthData(authResponse: AuthResponse) {
