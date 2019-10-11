@@ -10,7 +10,13 @@
 - ionic lab
 
 # Deploy website to firebase
-- ionic build --prod --release
+-- ionic build --prod --release
+- firebase login
+- (only for the first time)firebase init ->select hosting -> www (specify folder to deploy) -> y (write single-page app) -> n
+- firebase deploy
+
+#URL 
+https://fvmembership-ui.web.app
 
 # Run in android
 - ionic capacitor run android 
