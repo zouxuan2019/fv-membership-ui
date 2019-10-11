@@ -18,7 +18,7 @@ export class HomePage {
         this.user.name = this.router.getCurrentNavigation().extras.state.user;
       }
     });
-    Plugins.Storage.get({ key: 'authData' }).then(x => alert(x.value));
+    Plugins.Storage.get({ key: 'authData' }).then(x => console.log(x.value));
   }
 
 }
