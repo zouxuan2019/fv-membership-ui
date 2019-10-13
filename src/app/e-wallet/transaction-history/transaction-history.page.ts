@@ -1,21 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import{EWalletTransModel} from './e-wallet-trans-model';
+import {Component, OnInit} from '@angular/core';
+import {EWalletTransModel} from './e-wallet-trans-model';
+import {AuthorizedPageBaseService} from '../../authorized-page-base.service';
 
 @Component({
-  selector: 'app-transaction-history',
-  templateUrl: './transaction-history.page.html',
-  styleUrls: ['./transaction-history.page.scss'],
+    selector: 'app-transaction-history',
+    templateUrl: './transaction-history.page.html',
+    styleUrls: ['./transaction-history.page.scss'],
 })
-export class TransactionHistoryPage implements OnInit {
+export class TransactionHistoryPage extends AuthorizedPageBaseService implements OnInit {
 
-  history:EWalletTransModel[] = [
-  {amount:100, source:'Top Up', status:'Fail', actionDate:'2019-08-20 20:00:01'},
-  {amount:20,source:'Deduct', status:'Success', actionDate:'2019-08-19 20:00:01'},
-  {amount:20,source:'Top Up', status:'Success', actionDate:'2019-08-18 09:00:01'}];
+    history: EWalletTransModel[] = [
+        {amount: 100, source: 'Top Up', status: 'Fail', actionDate: '2019-08-20 20:00:01'},
+        {amount: 20, source: 'Deduct', status: 'Success', actionDate: '2019-08-19 20:00:01'},
+        {amount: 20, source: 'Top Up', status: 'Success', actionDate: '2019-08-18 09:00:01'}];
 
-  constructor() { }
+    constructor() {
+        super();
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
 }

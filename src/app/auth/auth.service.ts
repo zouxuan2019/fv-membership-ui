@@ -55,11 +55,11 @@ export class AuthService {
         if (this.isCordova) {
             return this.getTokenForNativeDevices(url, user);
         } else {
-            return this.getTokenForWebsite(url, user);
+            return this.getUserTokenForWebsite(url, user);
         }
     }
 
-    getTokenForWebsite(url: string, user: User): Observable<AuthResponse> {
+    getUserTokenForWebsite(url: string, user: User): Observable<AuthResponse> {
         const body = new HttpParams()
             .set('grant_type', 'password')
             .set('client_id', environment.fvMembership_ClientId)
@@ -70,7 +70,20 @@ export class AuthService {
         const header = {
             headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
         };
-        return this.getTokenFromWebHttp(url, body, header);
+        return this.getUserTokenFromWebHttp(url, body, header);
+    }
+
+    getClientCredentialToken(): Observable<AuthResponse> {
+        const url = environment.auth_Host;
+        const body = new HttpParams()
+            .set('grant_type', 'client_credentials')
+            .set('client_id', environment.fvMembershipThirdPartyClientId)
+            .set('client_secret', environment.fvMembershipThirdPartyClientSecret)
+            .set('scope', environment.fvMembership_Scope);
+        const header = {
+            headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+        };
+        return this.getUserTokenFromWebHttp(url, body, header);
     }
 
     getTokenForNativeDevices(url: string, user: User): Observable<AuthResponse> {
@@ -101,22 +114,27 @@ export class AuthService {
             const header = {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             };
-            return this.getTokenFromWebHttp(url, body, header);
+            return this.getUserTokenFromWebHttp(url, body, header);
         }
     }
 
-    private getTokenFromWebHttp(url: string, body: any, header: {
+    private getUserTokenFromWebHttp(url: string, body: any, header: {
         headers?: HttpHeaders | { [header: string]: string | string[]; };
     }): Observable<AuthResponse> {
-        console.log(url);
-        const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
-        return this.httpClient.post<AuthResponse>(`${url}`, data, header)
+        return this.getAuthTokenResponse(url, body, header)
             .pipe(tap(async (res: AuthResponse) => {
                 if (res.access_token) {
                     await this.storeUserAuthData(res);
                 }
                 this.authSubject.next(true);
             }));
+    }
+
+    private getAuthTokenResponse(url: string, body: any, header: {
+        headers?: HttpHeaders | { [header: string]: string | string[]; };
+    }): Observable<AuthResponse> {
+        const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
+        return this.httpClient.post<AuthResponse>(`${url}`, data, header);
     }
 
     private getTokenFromNativeHttp(url: string, data, header): Observable<AuthResponse> {

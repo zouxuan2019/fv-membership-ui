@@ -6,7 +6,6 @@ import {sha256} from 'js-sha256';
 import {EWalletService} from '../e-wallet.service';
 import {EWalletTopUpDeductionResponse, TopUpDto} from '../EWalletDto';
 import {AuthService} from '../../auth/auth.service';
-import {Observable} from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -15,14 +14,16 @@ export class FomopaymentService {
 
     constructor(private fomoBo: FomoBo, private eWalletService: EWalletService, private authService: AuthService) {
         const host = this.getHost();
+        const eWalletHost = environment.eWallet_Host;
         this.fomoBo = fomoBo;
         this.fomoBo.returnUrl = `${host}/return`;
-        this.fomoBo.callbackUrl = `${host}/callback`;
-        this.fomoBo.transaction = uuid();
-        this.fomoBo.nonce = uuid();
+        this.fomoBo.callbackUrl = `${eWalletHost}/api/Payment/callback`;
+        this.fomoBo.transaction = 'abc'; // uuid();
+        this.fomoBo.nonce = 'abc'; // uuid();
         this.fomoBo.type = 'sale';
         this.fomoBo.timeout = '1800';
         this.fomoBo.currencyCode = 'sgd';
+        this.fomoBo.merchant = 'test';
         console.log(this.fomoBo.returnUrl);
     }
 
@@ -48,14 +49,14 @@ export class FomopaymentService {
 
     public async saveTopUpTransaction(): Promise<EWalletTopUpDeductionResponse> {
         const request = new TopUpDto();
-        request.ActionDate = this.eWalletService.getCurrentDate();
-        request.Amount = this.fomoBo.amount;
-        request.PaymentMerchant = this.fomoBo.merchant;
-        request.Status = 'Init';
+        request.actionDate = this.eWalletService.getCurrentDate();
+        request.amount = this.fomoBo.amount;
+        request.paymentMerchant = this.fomoBo.merchant;
+        request.status = 'Init';
         const userName = await this.authService.getUserName();
-        request.UserId = userName;
+        request.userId = userName;
         window.sessionStorage.setItem('transactionId', this.fomoBo.transaction);
-        request.TransactionId = this.fomoBo.transaction;
+        request.transactionId = this.fomoBo.transaction;
         return this.eWalletService.saveTopUpTransaction(request).toPromise();
     }
 

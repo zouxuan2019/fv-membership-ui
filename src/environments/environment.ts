@@ -10,8 +10,10 @@ export const environment = {
     fvMembership_ClientId: 'FvMembershipClientId',
     fvMembership_ClientSecret: 'FvMembershipClientSecret',
     fvMembership_Scope: 'FvMembership',
-    eWallet_Host: 'https://localhost:5001'
-
+    fvMembershipThirdPartyClientId: 'FvMembershipThirdPartyClientId',
+    fvMembershipThirdPartyClientSecret: 'FvMembershipThirdPartyClientSecret',
+    eWallet_Host: 'https://localhost:5001',
+    auth_Host: 'https://localhost:7001'
 };
 
 /*

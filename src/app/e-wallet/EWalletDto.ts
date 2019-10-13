@@ -7,23 +7,23 @@ export class EWalletDto {
 }
 
 export class DeDuctDto {
-    Amount: number;
-    TransactionId: string;
-    Product: string;
-    Company: string;
-    Comment: string;
-    UserId: string;
-    ActionDate: string;
+    amount: number;
+    transactionId: string;
+    product: string;
+    company: string;
+    comment: string;
+    userId: string;
+    actionDate: string;
 }
 
 export class TopUpDto {
-    Amount: number;
-    TransactionId: string;
-    PaymentReferenceNo: string;
-    PaymentMerchant: string;
-    Status: string;
-    ActionDate: string;
-    UserId: string;
+    amount: number;
+    transactionId: string;
+    paymentReferenceNo: string;
+    paymentMerchant: string;
+    status: string;
+    actionDate: string;
+    userId: string;
 }
 
 export class EWalletTopUpDeductionResponse {

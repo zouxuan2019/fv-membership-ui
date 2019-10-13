@@ -3,14 +3,16 @@ import {FomoBo} from './fomo-bo';
 import {FomopaymentService} from '../payment/fomopayment.service';
 import {EWalletService} from '../e-wallet.service';
 import {AuthService} from '../../auth/auth.service';
+import {AuthorizedPageBaseService} from '../../authorized-page-base.service';
 
 @Component({
     selector: 'app-topup',
     templateUrl: './topup.page.html',
     styleUrls: ['./topup.page.scss'],
 })
-export class TopupPage implements OnInit {
+export class TopupPage extends AuthorizedPageBaseService implements OnInit {
     constructor(private eWalletService: EWalletService, private authService: AuthService) {
+        super();
     }
 
     user: any = {name: 'Zou Xuan', balance: 100};
