@@ -4,6 +4,7 @@ import {AuthService} from '../auth.service';
 import {NgForm} from '@angular/forms';
 import {JwtTokenService} from '../jwt-token.service';
 import {Plugins} from '@capacitor/core';
+import {WidgetUtilServiceService} from '../../widget-util-service.service';
 
 @Component({
     selector: 'app-login',
@@ -12,7 +13,8 @@ import {Plugins} from '@capacitor/core';
 })
 export class LoginPage implements OnInit {
 
-    constructor(private authService: AuthService, private router: Router, private jwtTokenService: JwtTokenService) {
+    constructor(private authService: AuthService, private router: Router, private jwtTokenService: JwtTokenService,
+                private widgetUtilServiceService: WidgetUtilServiceService) {
     }
 
     ngOnInit() {
@@ -29,7 +31,8 @@ export class LoginPage implements OnInit {
                 if (res.access_token) {
                     this.routeToHome(form.value.email);
                 } else {
-                    alert('Some error happened');
+                    console.log(res);
+                    this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
                 }
             }
         );

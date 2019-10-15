@@ -4,6 +4,7 @@ import {FomopaymentService} from '../payment/fomopayment.service';
 import {EWalletService} from '../e-wallet.service';
 import {AuthService} from '../../auth/auth.service';
 import {AuthorizedPageBaseService} from '../../authorized-page-base.service';
+import {WidgetUtilServiceService} from '../../widget-util-service.service';
 
 @Component({
     selector: 'app-topup',
@@ -11,7 +12,8 @@ import {AuthorizedPageBaseService} from '../../authorized-page-base.service';
     styleUrls: ['./topup.page.scss'],
 })
 export class TopupPage extends AuthorizedPageBaseService implements OnInit {
-    constructor(private eWalletService: EWalletService, private authService: AuthService) {
+    constructor(private eWalletService: EWalletService, private authService: AuthService,
+                private widgetUtilServiceService: WidgetUtilServiceService) {
         super();
     }
 
@@ -32,6 +34,9 @@ export class TopupPage extends AuthorizedPageBaseService implements OnInit {
             fomopaymentService.processFomoPayment();
             const html = fomopaymentService.postFomo();
             document.write(html);
+        } else {
+            console.log(topUpResult);
+            this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred, please contact administrator');
         }
 
     }

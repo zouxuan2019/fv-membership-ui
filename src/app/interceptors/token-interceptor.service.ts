@@ -1,79 +1,72 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpResponse,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import {
-  Router
-} from '@angular/router';
-import { WidgetUtilServiceService } from '../widget-util-service.service';
-import { Plugins } from '@capacitor/core';
+import {Injectable} from '@angular/core';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {WidgetUtilServiceService} from '../widget-util-service.service';
+import {Plugins} from '@capacitor/core';
+import {AuthResponse} from '../auth/auth-response';
+import {AuthService} from '../auth/auth.service';
+import 'rxjs/add/observable/fromPromise';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class TokenInterceptorService implements HttpInterceptor {
-  constructor(private router: Router, public widgetUtilServiceService: WidgetUtilServiceService) { }
-
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this._setHeaderToken(request);
-    this._setHeaderContentType(request);
-
-    return next.handle(request).pipe(
-      map((event: HttpEvent<any>) => {
-        if (event instanceof HttpResponse) {
-          console.log('event--->>>', event);
-        }
-        return event;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          if (error.error.success === false) {
-            this.widgetUtilServiceService.presentToast('Login failed');
-          } else {
-            this.router.navigate(['login']);
-          }
-          return throwError(error);
-        }
-      }));
-  }
-
-  _setHeaderToken(request: HttpRequest<any>) {
-    const authData = Plugins.Storage.get({ key: 'authData' });
-    authData.then(au => {
-      const authDataObj = JSON.parse(au.value);
-      if (authDataObj) {
-        const token = authDataObj.access_token;
-        request = request.clone({
-          setHeaders: {
-            Authorization: `bearer ${token}`
-          }
-        });
-      }
-    }).catch((e) => {
-      console.log(e);
-    });
-
-  }
-
-
-  _setHeaderContentType(request: HttpRequest<any>) {
-    if (!request.headers.has('Content-Type')) {
-      request = request.clone({
-        setHeaders: {
-          'content-type': 'application/json'
-        }
-      });
+    constructor(private router: Router, public widgetUtilServiceService: WidgetUtilServiceService,
+                private authService: AuthService) {
     }
 
-    request = request.clone({
-      headers: request.headers.set('Accept', 'application/json')
-    });
-  }
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        return Observable.fromPromise(this.handle(request, next));
+    }
+
+    async handle(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
+        const changedRequest = await this._setHeaderToken(request);
+        return next.handle(changedRequest).pipe(
+            map((event: HttpEvent<any>) => {
+                if (event instanceof HttpResponse) {
+                    console.log('event--->>>', event);
+                }
+                return event;
+            }),
+            catchError((error: HttpErrorResponse) => {
+                if (error.status === 401) {
+                    this.widgetUtilServiceService.presentToast('Unauthorized Request!');
+                    return throwError(error);
+                }
+            })).toPromise();
+    }
+
+    async _setHeaderToken(request: HttpRequest<any>): Promise<HttpRequest<any>> {
+        const authData = Plugins.Storage.get({key: 'authData'});
+        await authData.then(async au => {
+            const authDataObj = JSON.parse(au.value);
+            if (authDataObj != null && this.isTokenExpired(authDataObj)) {
+                await this.refreshToken(authDataObj);
+                this._setHeaderToken(request);
+            }
+            if (authDataObj) {
+                const token = authDataObj.access_token;
+                request = request.clone({
+                    headers: request.headers.set(
+                        'Authorization',
+                        `Bearer ${token}`
+                    )
+                });
+            }
+        }).catch((e) => {
+            console.log(e);
+        });
+        return request;
+    }
+
+    isTokenExpired(authData: AuthResponse): boolean {
+        return (authData.expires_at - Date.now() < 60 * 1000);
+    }
+
+    refreshToken(authData: AuthResponse): Promise<AuthResponse> {
+        return this.authService.getUserTokenByRefreshToken(authData);
+    }
+
 }

@@ -11,6 +11,7 @@ import {HTTP} from '@ionic-native/http/ngx';
 import {fromPromise} from 'rxjs/observable/fromPromise';
 import {UrlFactoryService} from '../url-factory.service';
 import {environment} from '../../environments/environment';
+import {WidgetUtilServiceService} from '../widget-util-service.service';
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +21,7 @@ export class AuthService {
     isCordova: boolean;
 
     constructor(private httpClient: HttpClient, private nativeHttp: HTTP, private router: Router, private facebookService: FacebookService
-        , private urlFactoryService: UrlFactoryService) {
+        , private urlFactoryService: UrlFactoryService, private widgetUtilServiceService: WidgetUtilServiceService) {
         if (facebookService.isPlatformCordova()) {
             this.isCordova = true;
         } else {
@@ -64,13 +65,27 @@ export class AuthService {
             .set('grant_type', 'password')
             .set('client_id', environment.fvMembership_ClientId)
             .set('client_secret', environment.fvMembership_ClientSecret)
-            .set('scope', environment.fvMembership_Scope)
+            .set('scope', `${environment.fvMembership_Scope} offline_access`)
             .set('username', user.email)
             .set('password', user.password);
         const header = {
             headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
         };
         return this.getUserTokenFromWebHttp(url, body, header);
+    }
+
+    async getUserTokenByRefreshToken(authData: AuthResponse): Promise<AuthResponse> {
+        const url = `${this.urlFactoryService.getUrl('auth')}/connect/token`;
+        const body = new HttpParams()
+            .set('grant_type', 'refresh_token')
+            .set('client_id', environment.fvMembership_ClientId)
+            .set('client_secret', environment.fvMembership_ClientSecret)
+            .set('refresh_token', authData.refresh_token);
+
+        const header = {
+            headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+        };
+        return this.getUserTokenFromWebHttp(url, body, header).toPromise();
     }
 
     getClientCredentialToken(): Observable<AuthResponse> {
@@ -125,6 +140,9 @@ export class AuthService {
             .pipe(tap(async (res: AuthResponse) => {
                 if (res.access_token) {
                     await this.storeUserAuthData(res);
+                } else {
+                    console.log(res);
+                    this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
                 }
                 this.authSubject.next(true);
             }));
@@ -133,8 +151,13 @@ export class AuthService {
     private getAuthTokenResponse(url: string, body: any, header: {
         headers?: HttpHeaders | { [header: string]: string | string[]; };
     }): Observable<AuthResponse> {
-        const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
-        return this.httpClient.post<AuthResponse>(`${url}`, data, header);
+        try {
+            const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
+            return this.httpClient.post<AuthResponse>(`${url}`, data, header);
+        } catch (e) {
+            console.log(e);
+            this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login service, please contact administrator');
+        }
     }
 
     private getTokenFromNativeHttp(url: string, data, header): Observable<AuthResponse> {
@@ -142,7 +165,12 @@ export class AuthService {
             console.log(res);
             if (res.status === 200) {
                 const jsonData = JSON.parse(res.data);
-                const authRes: AuthResponse = {access_token: jsonData.access_token, expires_at: null, expires_in: jsonData.expores_in};
+                const authRes: AuthResponse = {
+                    access_token: jsonData.access_token,
+                    expires_at: Date.now() + (jsonData.expires_in / 60) * 1000 * 60,
+                    expires_in: jsonData.expores_in,
+                    refresh_token: jsonData.refresh_token
+                };
                 await this.storeUserAuthData(authRes);
                 this.authSubject.next(true);
                 return authRes;
@@ -158,7 +186,7 @@ export class AuthService {
     }
 
     async storeUserAuthData(authResponse: AuthResponse) {
-        authResponse.expires_at = Date.now() - authResponse.expires_in;
+        authResponse.expires_at = Date.now() + (authResponse.expires_in / 60) * 1000 * 60;
         const data = JSON.stringify(authResponse);
         await Plugins.Storage.set({key: 'authData', value: data});
     }
