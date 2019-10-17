@@ -22,11 +22,11 @@ export class FacebookService {
     if (this.isPlatformCordova()) {
       return this.nativeFacebookService.loginWithNativeFacebook();
     } else {
-      return this.loginWithBrowerFacebook();
+      return this.loginWithBrowserFacebook();
     }
   }
 
-  loginWithBrowerFacebook(): Promise<User> {
+  loginWithBrowserFacebook(): Promise<User> {
     return new Promise((resolve, reject) => {
       FB.getLoginStatus((statusRes) => {
         if (statusRes.status === 'connected') {

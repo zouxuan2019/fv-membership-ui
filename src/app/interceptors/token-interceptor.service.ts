@@ -8,6 +8,7 @@ import {Plugins} from '@capacitor/core';
 import {AuthResponse} from '../auth/auth-response';
 import {AuthService} from '../auth/auth.service';
 import 'rxjs/add/observable/fromPromise';
+import {environment} from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +23,10 @@ export class TokenInterceptorService implements HttpInterceptor {
     }
 
     async handle(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
-        const changedRequest = await this._setHeaderToken(request);
+        let changedRequest = request;
+        if (!request.url.includes(environment.auth_Host)) {
+            changedRequest = await this._setHeaderToken(request);
+        }
         return next.handle(changedRequest).pipe(
             map((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse) {
@@ -42,7 +46,7 @@ export class TokenInterceptorService implements HttpInterceptor {
         const authData = Plugins.Storage.get({key: 'authData'});
         await authData.then(async au => {
             const authDataObj = JSON.parse(au.value);
-            if (authDataObj != null && this.isTokenExpired(authDataObj)) {
+            if (authDataObj != null && await this.isTokenExpired(authDataObj)) {
                 await this.refreshToken(authDataObj);
                 this._setHeaderToken(request);
             }
@@ -61,12 +65,20 @@ export class TokenInterceptorService implements HttpInterceptor {
         return request;
     }
 
-    isTokenExpired(authData: AuthResponse): boolean {
-        return (authData.expires_at - Date.now() < 60 * 1000);
+
+    refreshToken(authData: AuthResponse) {
+        if (authData.source === null) {
+            this.authService.getUserTokenByRefreshToken(authData);
+        } else {
+            this.authService.getSocialMediaRefreshToken(authData);
+        }
     }
 
-    refreshToken(authData: AuthResponse): Promise<AuthResponse> {
-        return this.authService.getUserTokenByRefreshToken(authData);
+    async isTokenExpired(authData: AuthResponse): Promise<boolean> {
+        const expiresAt = await this.authService.getExpiresAt();
+        const dExpiresAt = new Date(0);
+        dExpiresAt.setUTCSeconds(expiresAt);
+        const currentDate = new Date();
+        return (dExpiresAt.getTime() - currentDate.getTime()) / 1000 / 60 < 3;
     }
-
 }

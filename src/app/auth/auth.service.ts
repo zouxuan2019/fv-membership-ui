@@ -38,11 +38,12 @@ export class AuthService {
     }
 
     loginWithFacebook(): Observable<AuthResponse> {
-        const url = `${this.urlFactoryService.getUrl('auth')}/ExchangeToken/jwt`;
         const res = this.facebookService.loginWithFacebook();
         return new Observable(observer => {
             res.then(user => {
-                this.getAuthResponseForSocialMedia(url, 'Facebook', user.accessToken).subscribe(x => {
+                const url = `${this.urlFactoryService.getUrl('auth')}/ExchangeToken/jwt`;
+                this.getAuthResponseForSocialMedia(url, 'Facebook', user.accessToken).subscribe(async x => {
+                    await this.storeUserAuthData(x);
                     observer.next(x);
                 });
             }).catch(err => {
@@ -165,15 +166,9 @@ export class AuthService {
             console.log(res);
             if (res.status === 200) {
                 const jsonData = JSON.parse(res.data);
-                const authRes: AuthResponse = {
-                    access_token: jsonData.access_token,
-                    expires_at: Date.now() + (jsonData.expires_in / 60) * 1000 * 60,
-                    expires_in: jsonData.expores_in,
-                    refresh_token: jsonData.refresh_token
-                };
-                await this.storeUserAuthData(authRes);
+                await this.storeUserAuthData(jsonData);
                 this.authSubject.next(true);
-                return authRes;
+                return jsonData;
             } else {
                 alert(JSON.stringify(res));
                 return null;
@@ -186,7 +181,6 @@ export class AuthService {
     }
 
     async storeUserAuthData(authResponse: AuthResponse) {
-        authResponse.expires_at = Date.now() + (authResponse.expires_in / 60) * 1000 * 60;
         const data = JSON.stringify(authResponse);
         await Plugins.Storage.set({key: 'authData', value: data});
     }
@@ -209,4 +203,20 @@ export class AuthService {
         });
 
     }
+
+    async getExpiresAt(): Promise<number> {
+        return Plugins.Storage.get({key: 'authData'}).then(x => {
+            const token = x.value;
+            const payload = atob(token.split('.')[1]);
+            return JSON.parse(payload).exp;
+        });
+
+    }
+
+
+    getSocialMediaRefreshToken(authData: AuthResponse): Promise<AuthResponse> {
+        const url = `${this.urlFactoryService.getUrl('auth')}/ExchangeToken/refresh`;
+        return this.getAuthResponseForSocialMedia(url, 'Facebook', authData.refresh_token).toPromise();
+    }
+
 }
