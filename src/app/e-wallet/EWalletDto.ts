@@ -1,8 +1,8 @@
 export class EWalletDto {
-    Balance: number;
-    UserId: string;
-    DeductHistories: DeDuctDto[];
-    TopUpHistories: TopUpDto[];
+    balance: number;
+    userId: string;
+    deductHistories: DeDuctDto[];
+    topUpHistories: TopUpDto[];
 
 }
 
@@ -14,6 +14,7 @@ export class DeDuctDto {
     comment: string;
     userId: string;
     actionDate: string;
+    status: string;
 }
 
 export class TopUpDto {
