@@ -1,49 +1,51 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>my-qr</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>my-qr</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let item of items">
-      <ion-card>
-        <img src="assets/qr.png" height='200' width='120' />
-        <ion-card-content>
-          <ion-card-title>
-            {{item.product}}
-          </ion-card-title>
-          <p>
-            Quantity: {{item.quantity}}
-          </p>
-          <p>
-            Expiry Date: {{item.expiryDate}}
-          </p>
-        </ion-card-content>
-        <ion-row no-padding>
-          <ion-col>
-            <ion-button clear fill="outline" color="primary" icon-start>
-              <ion-icon name='arrow-up'></ion-icon>
-              Topup
-            </ion-button>
-          </ion-col>
-          <ion-col text-center>
-            <ion-button clear fill="outline" color="primary" icon-start>
-              <ion-icon name='share'></ion-icon>
-              Share
-            </ion-button>
-          </ion-col>
-          <ion-col text-right>
-            <ion-button clear fill="outline" color="primary" icon-start>
-              <ion-icon name='refresh'></ion-icon>
-              Regenerate
-            </ion-button>
-          </ion-col>
+    <ion-grid>
+        <ion-row>
+            <ion-col *ngFor="let item of items" size="12" size-sm="6" size-md="4" size-lg="4">
+                <ion-card>
+                    <img src="assets/qr.png"/>
+                    <ion-card-content>
+                        <ion-card-title>
+                            {{item.product}}
+                        </ion-card-title>
+                        <p>
+                            Quantity: {{item.quantity}}
+                        </p>
+                        <p>
+                            Expiry Date: {{item.expiryDate}}
+                        </p>
+                    </ion-card-content>
+                    <ion-row no-padding>
+                        <ion-col size="12" size-sm="6" size-md="4" size-lg="4">
+                            <ion-button clear fill="outline" color="primary" icon-start>
+                                <ion-icon name='arrow-up'></ion-icon>
+                                Topup
+                            </ion-button>
+                        </ion-col>
+                        <ion-col text-center>
+                            <ion-button clear fill="outline" color="primary" icon-start>
+                                <ion-icon name='share'></ion-icon>
+                                Share
+                            </ion-button>
+                        </ion-col>
+                        <ion-col text-right>
+                            <ion-button clear fill="outline" color="primary" icon-start>
+                                <ion-icon name='refresh'></ion-icon>
+                                Regenerate
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
+                </ion-card>
+            </ion-col>
         </ion-row>
-      </ion-card>
-    </ion-item>
-  </ion-list>
+    </ion-grid>
 </ion-content>
