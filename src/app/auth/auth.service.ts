@@ -89,19 +89,6 @@ export class AuthService {
         return this.getUserTokenFromWebHttp(url, body, header).toPromise();
     }
 
-    getClientCredentialToken(): Observable<AuthResponse> {
-        const url = environment.auth_Host;
-        const body = new HttpParams()
-            .set('grant_type', 'client_credentials')
-            .set('client_id', environment.fvMembershipThirdPartyClientId)
-            .set('client_secret', environment.fvMembershipThirdPartyClientSecret)
-            .set('scope', environment.fvMembership_Scope);
-        const header = {
-            headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-        };
-        return this.getUserTokenFromWebHttp(url, body, header);
-    }
-
     getTokenForNativeDevices(url: string, user: User): Observable<AuthResponse> {
         const header = {'Content-Type': 'application/x-www-form-urlencoded'};
         const data = {
@@ -186,17 +173,37 @@ export class AuthService {
     }
 
     async logout() {
-        Plugins.Storage.remove({key: 'authData'});
-        this.authSubject.next(false);
-        this.router.navigateByUrl('login');
+        Plugins.Storage.get({key: 'authData'}).then(authData => {
+            this.revokeRefreshToken(JSON.parse(authData.value));
+            Plugins.Storage.remove({key: 'authData'}).then(() => {
+                this.authSubject.next(false);
+                this.router.navigateByUrl('login');
+            });
+
+        });
     }
 
-    isLoggedIn() {
-        return this.authSubject.asObservable();
+    revokeRefreshToken(authData: AuthResponse) {
+        const url = `${this.urlFactoryService.getUrl('auth')}/connect/revocation`;
+        const body = new HttpParams()
+            .set('token', authData.refresh_token)
+            .set('token_type_hint', 'refresh_token');
+
+        const header = {
+            headers: new HttpHeaders()
+                .set('Content-Type', 'application/x-www-form-urlencoded')
+                .set('Authorization', 'Basic RnZNZW1iZXJzaGlwQ2xpZW50SWQ6RnZNZW1iZXJzaGlwQ2xpZW50U2VjcmV0')
+        };
+        return this.getUserTokenFromWebHttp(url, body, header).toPromise();
+    }
+
+    isLoggedIn(): Promise<boolean> {
+        return this.authSubject.asObservable().toPromise();
     }
 
     async getUserName(): Promise<string> {
-        return Plugins.Storage.get({key: 'authData'}).then(x => {
+        return Plugins.Storage.get({key: 'authData'})
+            .then(x => {
             const token = x.value;
             const payload = atob(token.split('.')[1]);
             return JSON.parse(payload).sub;

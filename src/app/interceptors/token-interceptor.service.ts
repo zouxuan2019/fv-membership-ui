@@ -68,9 +68,13 @@ export class TokenInterceptorService implements HttpInterceptor {
 
     refreshToken(authData: AuthResponse) {
         if (authData.source === null) {
-            this.authService.getUserTokenByRefreshToken(authData);
+            this.authService.getUserTokenByRefreshToken(authData).catch(ex => {
+                this.widgetUtilServiceService.presentToast('Refresh Token Failed');
+            });
         } else {
-            this.authService.getSocialMediaRefreshToken(authData);
+            this.authService.getSocialMediaRefreshToken(authData).catch(ex => {
+                this.widgetUtilServiceService.presentToast('Refresh Token Failed');
+            });
         }
     }
 
