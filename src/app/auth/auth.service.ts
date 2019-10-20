@@ -174,7 +174,10 @@ export class AuthService {
 
     async logout() {
         Plugins.Storage.get({key: 'authData'}).then(authData => {
-            this.revokeRefreshToken(JSON.parse(authData.value));
+            const authDataObj = JSON.parse(authData.value);
+            if (authDataObj.source === null || authDataObj.source === undefined) {
+                this.revokeRefreshToken(authDataObj);
+            }
             Plugins.Storage.remove({key: 'authData'}).then(() => {
                 this.authSubject.next(false);
                 this.router.navigateByUrl('login');
@@ -204,10 +207,10 @@ export class AuthService {
     async getUserName(): Promise<string> {
         return Plugins.Storage.get({key: 'authData'})
             .then(x => {
-            const token = x.value;
-            const payload = atob(token.split('.')[1]);
-            return JSON.parse(payload).sub;
-        });
+                const token = x.value;
+                const payload = atob(token.split('.')[1]);
+                return JSON.parse(payload).sub;
+            });
 
     }
 
