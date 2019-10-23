@@ -1,6 +1,7 @@
 # Environment setup
 - install npm
 - npm install -g ionic cordova
+- npm install --save-dev @angular-devkit/build-angular
 
 # Start server
 - ionic serve --ssl
