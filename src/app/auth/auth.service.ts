@@ -9,6 +9,7 @@ import { Plugins } from '@capacitor/core';
 import { FacebookService } from './login/facebook.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { fromPromise } from 'rxjs/observable/fromPromise';
+import { RestProvider } from '../../providers/rest/rest';
 import { UrlFactoryService } from '../url-factory.service';
 
 @Injectable({
@@ -19,7 +20,7 @@ export class AuthService {
   isCordova: boolean;
 
   constructor(private httpClient: HttpClient, private nativeHttp: HTTP, private router: Router, private facebookService: FacebookService
-    , private urlFactoryService: UrlFactoryService) {
+    ,private rest: RestProvider, private urlFactoryService: UrlFactoryService) {
     if (facebookService.isPlatformCordova()) {
       this.isCordova = true;
     } else {
@@ -30,7 +31,6 @@ export class AuthService {
   register(user: User): Observable<AuthResponse> {
     return this.getAuthResponse('register', user);
   }
-
   login(user: User): Observable<AuthResponse> {
     return this.getAuthResponse(`${this.urlFactoryService.getUrl(this.isCordova, 'auth')}/connect/token`, user);
   }

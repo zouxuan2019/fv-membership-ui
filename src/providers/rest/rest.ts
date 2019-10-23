@@ -17,32 +17,49 @@ export class RestProvider {
     console.log(username);
 
     var httpParams = new HttpParams()
-                       .set('StaffID', username)
-                       .set('Password',password);
+                       .set('username', username)
+                       .set('password',password);
                        
    var url=this.config.GetBaseApi()+this.config.LoginUrl;
   
    return this.http.post<any>(url, httpParams);
   }
  
-  AccountCheck(account){
-    console.log(account);
-    var httpParams = new HttpParams()
-                       .set('StaffID', account);
-    var url=this.config.GetBaseApi()+this.config.forgetPasswordUrl;                  
-    return this.http.post<any>(url,httpParams);
-
-  }
-
   
-  UpdatePassword(staffID,token,password){
-    console.log(staffID+token+password);
+  Register(username,password,email){
+    var httpParams = new HttpParams()
+    .set('username', username)
+    .set('password', password)
+    .set('email',email)
+
+    var url=this.config.GetBaseApi()+this.config.RegisterUrl;
+    return this.http.post<any>(url, httpParams);
+  }
+  ForgetPassword(email){
+    var httpParams = new HttpParams()
+    .set('email',email)
+
+    var url=this.config.GetBaseApi()+this.config.forgetPasswordUrl;
+    return this.http.post<any>(url, httpParams);
+  }
+  
+  ResetPassword(currentp,newp,email){
+    console.log(currentp+newp+email);
    
     var httpParams = new HttpParams()
-    .set('StaffID', staffID)
-    .set('Password',password)
-    .set('TempKey',token);
+    .set('currentPassword', currentp)
+    .set('newPassword', newp )
+    .set('email',email);
     var url=this.config.GetBaseApi()+this.config.resetPasswordUrl;
+    return this.http.post<any>(url, httpParams);
+    
+  }
+  SendOTP(email){
+    console.log(email);
+   
+    var httpParams = new HttpParams()
+    .set('email',email);
+    var url=this.config.GetBaseApi()+this.config.SendOtpUrl;
     return this.http.post<any>(url, httpParams);
     
   }
@@ -50,22 +67,5 @@ export class RestProvider {
   
 
   
-  //others
   
-  // private extractData(res: Response) {
-  //   let body = res;
-  //   return body || { };
-  // }
-  
-  // private handleError (error: Response | any) {
-  //   let errMsg: string;
-  //   if (error instanceof Response) {
-  //     const err = error || '';
-  //     errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-  //   } else {
-  //     errMsg = error.message ? error.message : error.toString();
-  //   }
-  //   console.error(errMsg);
-  //   return Observable.throw(errMsg);
-  // }
 }
