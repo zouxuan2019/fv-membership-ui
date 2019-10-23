@@ -8,11 +8,11 @@
 </ion-header>
 
 <ion-content>
-  <form #form="ngForm" (ngSubmit)="fomopay(form)">
+  <form #form="ngForm" (ngSubmit)="topup(form)">
     <ion-grid>
       <ion-row justify-content-center>
         <ion-col padding>
-          Current Balance: S${{user.balance}}
+          Current Balance: S{{user.balance}}
         </ion-col>
       </ion-row>
       <ion-row justify-content-center>
@@ -30,7 +30,7 @@
       <ion-row justify-content-center>
         <ion-col padding>
           <ion-label>Payment Agent</ion-label>
-          <ion-select>
+          <ion-select name="paymentType" >
             <ion-select-option value="fomo" selected>FOMO Pay</ion-select-option>
           </ion-select>
         </ion-col>

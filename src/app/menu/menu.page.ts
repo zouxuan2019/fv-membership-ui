@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterEvent } from '@angular/router';
 import { WidgetUtilServiceService } from '../widget-util-service.service';
 import { AuthService } from '../auth/auth.service';
 
@@ -73,7 +72,7 @@ export class MenuPage implements OnInit {
           this.authService.logout();
         }
       }
-    ])
+    ]);
   }
 
 }

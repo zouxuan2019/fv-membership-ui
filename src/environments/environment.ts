@@ -3,7 +3,17 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    fomo_Url: 'https://gateway.fomopay.com/sandbox/pgw/v1',
+    fomo_Merchant: 'test',
+    fomo_ApiKey: '00000000',
+    fvMembership_ClientId: 'FvMembershipClientId',
+    fvMembership_ClientSecret: 'FvMembershipClientSecret',
+    fvMembership_Scope: 'FvMembership',
+    fvMembershipThirdPartyClientId: 'FvMembershipThirdPartyClientId',
+    fvMembershipThirdPartyClientSecret: 'FvMembershipThirdPartyClientSecret',
+    eWallet_Host: 'https://localhost:5001',
+    auth_Host: 'https://localhost:7001'
 };
 
 /*

@@ -3,24 +3,25 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>products transaction-history</ion-title>
+    <ion-title>Products Transaction History</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let his of history">
-      <ion-card>
-        <ion-card-header>
-          {{his.product}}
-        </ion-card-header>
-        <ion-card-content>
-          <ion-item>Amount: ${{his.amount}}</ion-item>
-          <ion-item>Date: {{his.date}}</ion-item>
-          <ion-item>Quantity: {{his.quantity}}</ion-item>
-        </ion-card-content>
-      </ion-card>
-    </ion-item>
-  </ion-list>
-
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngFor="let his of history" size="12" size-sm="6" size-md="4" size-lg="4">
+        <ion-card>
+          <ion-card-header>
+            {{his.product}}
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item>Amount: ${{his.amount}}</ion-item>
+            <ion-item>Action Date: {{his.date}}</ion-item>
+            <ion-item>Status: {{his.quantity}}</ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
