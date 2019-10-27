@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ToastController, AlertController} from 'ionic-angular';
-import {RestProvider} from '../../../providers/rest/rest';
+import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { RestProvider } from '../../../providers/rest/rest';
 import { NgForm } from '@angular/forms';
 
 @Component({
@@ -10,72 +10,71 @@ import { NgForm } from '@angular/forms';
 })
 
 export class ResetPasswordPage implements OnInit {
-  public token='';
-  public user='';
-  public password='';
-  public rpassword='';
-  submitAttempt: boolean = false;
+  public token = '';
+  public user = '';
+  public password = '';
+  public rpassword = '';
+  submitAttempt = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,public rest:RestProvider,public toastCtrl: ToastController,public alertCtrl: AlertController) {
-  
-   
-   }
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+              public rest: RestProvider, public toastCtrl: ToastController, public alertCtrl: AlertController) {
+
+
+  }
 
   ngOnInit() {
   }
 
-  resetPassword(form:NgForm){
-    if(form.valid){
-      if(form.value.password!=form.value.rpassword){
+  resetPassword(form: NgForm) {
+    if (form.valid) {
+      if (form.value.password !== form.value.rpassword) {
 
         alert('Password not match');
-      }else if(this.password.length<6){
+      } else if (this.password.length < 6) {
         alert('Password not valid');
 
-      }else{
-        this.rest.ResetPassword(this.token,this.password,this.rpassword,this.user) .subscribe(
+      } else {
+        this.rest.ResetPassword(this.token, this.password, this.rpassword, this.user).subscribe(
           outcome => this.ProcessResult(JSON.parse(outcome)),
-          error => this.ErrorToast(error)); 
-     
-        }
+          error => this.ErrorToast(error));
+
       }
-      else{
-        console.log("not success!")
-        
-      } 
+    } else {
+      console.log('not success!')
+
+    }
   }
 
-  ProcessResult(data){ 
+  ProcessResult(data: any) {
     console.log(data);
-    if(data["status"]){
-     this.ShowAlert(data["message"]);    
+    if (data.status) {
+      this.ShowAlert(data.message);
+    } else {
+      this.ErrorToast(data.messsage);
     }
-    else{
-      this.ErrorToast(data["messsage"]);
-    }
-    
-    
-   
-   }
-  
-   ErrorToast(error){
+
+
+
+  }
+
+  ErrorToast(error: any) {
     console.log(error);
-    let toast = this.toastCtrl.create({
+    const toast = this.toastCtrl.create({
       message: error,
       duration: 3000,
       position: 'center'
     });
     toast.present();
   }
-  ShowAlert(msg){
-    let alert = this.alertCtrl.create({
+  ShowAlert(msg: any) {
+    const alert = this.alertCtrl.create({
       title: 'Info',
       subTitle: msg,
       buttons: [
         {
           text: 'OK',
           handler: () => {
-            this.navCtrl.popToRoot(); 
+            this.navCtrl.popToRoot();
           }
         }
       ]
