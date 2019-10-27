@@ -27,10 +27,9 @@ export class RestProvider {
   }
 
 
-  Register(Username: any, Password: any, Email: any) {
+  Register(Password: any, Email: any) {
 
     const postData = {
-      username: Username,
       password: Password,
       email: Email
     };

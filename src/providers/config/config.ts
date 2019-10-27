@@ -11,9 +11,9 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class ConfigProvider {
-  public apiUrl = 'http://localhost:8085/fv/v1.0/'; // Development
+  // public apiUrl = 'http://localhost:8085/fv/v1.0/'; // Development
   // public apiUrl="http://10.218.66.12/API/api/"; //Testing
-  // public apiUrl = "http://101.127.210.98:7043/V2/api/";//cloud
+  public apiUrl = 'http://ec2-3-82-235-227.compute-1.amazonaws.com:8085/fv/v1.0/'; // cloud
 
 
 
