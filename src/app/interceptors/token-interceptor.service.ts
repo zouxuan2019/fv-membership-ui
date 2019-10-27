@@ -33,8 +33,6 @@ export class TokenInterceptorService implements HttpInterceptor {
     async handle(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
         let changedRequest = request;
         if (!request.url.includes(environment.auth_Host)) {
-            alert(environment.auth_Host);
-            alert(request.url);
             changedRequest = await this._setHeaderToken(request);
         }
         return next.handle(changedRequest).pipe(
@@ -95,7 +93,6 @@ export class TokenInterceptorService implements HttpInterceptor {
         } else {
             this.authService.getUserTokenByRefreshToken(authData)
                 .catch(ex => {
-                    alert(authData.source + 'refresh token failed');
                     this.authService.removeAuthData();
                     this.widgetUtilServiceService.presentToast('Refresh Token Failed');
                     return false;

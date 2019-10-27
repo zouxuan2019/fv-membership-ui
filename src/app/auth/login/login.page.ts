@@ -37,7 +37,6 @@ export class LoginPage implements OnInit {
                     }
                 },
                 err => {
-                    alert(err);
                     this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
                 }
             );

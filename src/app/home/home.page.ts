@@ -23,7 +23,7 @@ export class HomePage extends AuthorizedPageBaseService {
             eWalletService.getTransactionHistoryByUserId(userName)
                 .then(x => {
                     this.user.balance = x.balance;
-                }).catch(x => alert('getTransactionHistoryErro'));
+                });
         });
         Plugins.Storage.get({key: 'authData'}).then(x => console.log(x.value));
 

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
-import {catchError, tap} from 'rxjs/operators';
-import {Observable, throwError} from 'rxjs';
+import {tap} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 import {User} from './user';
 import {AuthResponse} from './auth-response';
 import {Router} from '@angular/router';
@@ -32,7 +32,7 @@ export class AuthService {
     }
 
     login(user: User): Observable<AuthResponse> {
-        return this.getAuthResponse(`${environment.auth_Host}/connect/token`, user);
+        return this.getAuthResponse(`${environment.auth_Host}/token/login`, user);
     }
 
     loginWithFacebook(): Observable<AuthResponse> {
@@ -60,41 +60,31 @@ export class AuthService {
     }
 
     getUserTokenForWebsite(url: string, user: User): Observable<AuthResponse> {
-        const body = new HttpParams()
-            .set('grant_type', 'password')
-            .set('client_id', environment.fvMembership_ClientId)
-            .set('client_secret', environment.fvMembership_ClientSecret)
-            .set('scope', `${environment.fvMembership_Scope} offline_access`)
-            .set('username', user.email)
-            .set('password', user.password);
-        const header = {
-            headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+        const data = {
+            username: user.email,
+            password: user.password
         };
-        return this.getUserTokenFromWebHttp(url, body, header);
+        const header = {
+            headers: new HttpHeaders().set('Content-Type', 'application/json')
+        };
+        return this.getUserTokenFromWebHttp(url, data, header);
     }
 
     async getUserTokenByRefreshToken(authData: AuthResponse): Promise<AuthResponse> {
-        const url = `${environment.auth_Host}/connect/token`;
-        const body = new HttpParams()
-            .set('grant_type', 'refresh_token')
-            .set('client_id', environment.fvMembership_ClientId)
-            .set('client_secret', environment.fvMembership_ClientSecret)
-            .set('refresh_token', authData.refresh_token);
+        const url = `${environment.auth_Host}/token/refresh`;
+        const data = {
+            refresh_token: authData.refresh_token,
+        };
 
         const header = {
-            headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+            headers: new HttpHeaders().set('Content-Type', 'application/json')
         };
-        alert('before getUserTokenFromWebHttp');
-        return this.getUserTokenFromWebHttp(url, body, header).toPromise();
+        return this.getUserTokenFromWebHttp(url, data, header).toPromise();
     }
 
     getTokenForNativeDevices(url: string, user: User): Observable<AuthResponse> {
-        const header = {'Content-Type': 'application/x-www-form-urlencoded'};
+        const header = {'Content-Type': 'application/json'};
         const data = {
-            grant_type: 'password',
-            client_id: environment.fvMembership_ClientId,
-            client_secret: environment.fvMembership_ClientSecret,
-            scope: environment.fvMembership_Scope,
             username: user.email,
             password: user.password
         };
@@ -151,7 +141,6 @@ export class AuthService {
                 await this.storeUserAuthData(jsonData);
                 return jsonData;
             } else {
-                alert(JSON.stringify(res));
                 return null;
             }
         }).catch(err => {
