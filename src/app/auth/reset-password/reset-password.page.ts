@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ToastController, AlertController} from 'ionic-angular';
+import {RestProvider} from '../../../providers/rest/rest';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-reset-password',
@@ -8,6 +10,7 @@ import { NavController, NavParams, ToastController, AlertController} from 'ionic
 })
 
 export class ResetPasswordPage implements OnInit {
+  public token='';
   public user='';
   public password='';
   public rpassword='';
@@ -21,16 +24,16 @@ export class ResetPasswordPage implements OnInit {
   ngOnInit() {
   }
 
-  resetPassword(form){
+  resetPassword(form:NgForm){
     if(form.valid){
-      if(this.password!=this.rpassword){
+      if(form.value.password!=form.value.rpassword){
 
         alert('Password not match');
       }else if(this.password.length<6){
         alert('Password not valid');
 
       }else{
-        this.rest.UpdatePassword(this.user,this.password) .subscribe(
+        this.rest.ResetPassword(this.token,this.password,this.rpassword,this.user) .subscribe(
           outcome => this.ProcessResult(JSON.parse(outcome)),
           error => this.ErrorToast(error)); 
      
@@ -38,19 +41,17 @@ export class ResetPasswordPage implements OnInit {
       }
       else{
         console.log("not success!")
-        console.log(this.reset.value);
         
       } 
   }
 
   ProcessResult(data){ 
     console.log(data);
-    if(data["Result"]){
-      this.storage.set('password',this.password);
-     this.ShowAlert(data["ResultData"]);    
+    if(data["status"]){
+     this.ShowAlert(data["message"]);    
     }
     else{
-      this.ErrorToast(data["ResultData"]);
+      this.ErrorToast(data["messsage"]);
     }
     
     

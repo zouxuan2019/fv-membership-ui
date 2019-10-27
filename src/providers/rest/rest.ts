@@ -43,10 +43,11 @@ export class RestProvider {
     return this.http.post<any>(url, httpParams);
   }
   
-  ResetPassword(currentp,newp,email){
+  ResetPassword(token,currentp,newp,email){
     console.log(currentp+newp+email);
    
     var httpParams = new HttpParams()
+    .set('token',token)
     .set('currentPassword', currentp)
     .set('newPassword', newp )
     .set('email',email);

@@ -8,7 +8,8 @@ const routes: Routes = [
   { path: 'menu', loadChildren: './menu/menu.module#MenuPageModule' },
   { path: 'reset-password', loadChildren: './auth/reset-password/reset-password.module#ResetPasswordPageModule' },
   { path: 'callback', loadChildren: './e-wallet/payment/callback/callback.module#CallbackPageModule' },
-  { path: 'return', loadChildren: './e-wallet/payment/return/return.module#ReturnPageModule' }
+  { path: 'return', loadChildren: './e-wallet/payment/return/return.module#ReturnPageModule' },  { path: 'forget-password', loadChildren: './forget-password/forget-password.module#ForgetPasswordPageModule' }
+
 ];
 
 @NgModule({
