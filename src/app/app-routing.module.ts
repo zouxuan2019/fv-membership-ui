@@ -7,7 +7,9 @@ const routes: Routes = [
   { path: 'register', loadChildren: './auth/register/register.module#RegisterPageModule' },
   { path: 'menu', loadChildren: './menu/menu.module#MenuPageModule' },
   { path: 'reset-password', loadChildren: './auth/reset-password/reset-password.module#ResetPasswordPageModule' },
-  { path: 'return', loadChildren: './e-wallet/payment/return/return.module#ReturnPageModule' }
+  { path: 'return', loadChildren: './e-wallet/payment/return/return.module#ReturnPageModule' },
+  { path: 'forget-password', loadChildren: './auth/forget-password/forget-password.module#ForgetPasswordPageModule' }
+
 ];
 
 @NgModule({
