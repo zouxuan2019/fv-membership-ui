@@ -35,7 +35,8 @@ export class ForgetPasswordPage implements OnInit {
   ProcessResult(data: { status: any; message: any; }) {
     console.log(data);
     if (data.status) {
-      this.ErrorToast(data.message);
+      // this.ErrorToast(data.message);
+      this.router.navigateByUrl('/reset-password');
 
     } else {
       this.ErrorToast(data.message);
