@@ -83,7 +83,7 @@ export class RestProvider {
     };
 
     const url = this.config.GetBaseApi() + this.config.SendOtpUrl;
-    return this.http.post<any>(url, postData,{
+    return this.http.post<any>(url, postData, {
       headers: { 'Content-Type': 'application/json' }
     });
 
