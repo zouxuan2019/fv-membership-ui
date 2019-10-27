@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
-import {tap} from 'rxjs/operators';
-import {Observable, BehaviorSubject} from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
+import {Observable, throwError} from 'rxjs';
 import {User} from './user';
 import {AuthResponse} from './auth-response';
 import {Router} from '@angular/router';
@@ -9,7 +9,6 @@ import {Plugins} from '@capacitor/core';
 import {FacebookService} from './login/facebook.service';
 import {HTTP} from '@ionic-native/http/ngx';
 import {fromPromise} from 'rxjs/observable/fromPromise';
-import {UrlFactoryService} from '../url-factory.service';
 import {environment} from '../../environments/environment';
 import {WidgetUtilServiceService} from '../widget-util-service.service';
 
@@ -17,11 +16,10 @@ import {WidgetUtilServiceService} from '../widget-util-service.service';
     providedIn: 'root'
 })
 export class AuthService {
-    authSubject = new BehaviorSubject(false);
     isCordova: boolean;
 
     constructor(private httpClient: HttpClient, private nativeHttp: HTTP, private router: Router, private facebookService: FacebookService
-        , private urlFactoryService: UrlFactoryService, private widgetUtilServiceService: WidgetUtilServiceService) {
+        , private widgetUtilServiceService: WidgetUtilServiceService) {
         if (facebookService.isPlatformCordova()) {
             this.isCordova = true;
         } else {
@@ -34,14 +32,14 @@ export class AuthService {
     }
 
     login(user: User): Observable<AuthResponse> {
-        return this.getAuthResponse(`${this.urlFactoryService.getUrl('auth')}/connect/token`, user);
+        return this.getAuthResponse(`${environment.auth_Host}/connect/token`, user);
     }
 
     loginWithFacebook(): Observable<AuthResponse> {
         const res = this.facebookService.loginWithFacebook();
         return new Observable(observer => {
             res.then(user => {
-                const url = `${this.urlFactoryService.getUrl('auth')}/ExchangeToken/jwt`;
+                const url = `${environment.auth_Host}/ExchangeToken/jwt`;
                 this.getAuthResponseForSocialMedia(url, 'Facebook', user.accessToken).subscribe(async x => {
                     await this.storeUserAuthData(x);
                     observer.next(x);
@@ -76,7 +74,7 @@ export class AuthService {
     }
 
     async getUserTokenByRefreshToken(authData: AuthResponse): Promise<AuthResponse> {
-        const url = `${this.urlFactoryService.getUrl('auth')}/connect/token`;
+        const url = `${environment.auth_Host}/connect/token`;
         const body = new HttpParams()
             .set('grant_type', 'refresh_token')
             .set('client_id', environment.fvMembership_ClientId)
@@ -86,6 +84,7 @@ export class AuthService {
         const header = {
             headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
         };
+        alert('before getUserTokenFromWebHttp');
         return this.getUserTokenFromWebHttp(url, body, header).toPromise();
     }
 
@@ -130,22 +129,18 @@ export class AuthService {
                     await this.storeUserAuthData(res);
                 } else {
                     console.log(res);
+                    this.removeAuthData();
                     this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
                 }
-                this.authSubject.next(true);
             }));
     }
 
     private getAuthTokenResponse(url: string, body: any, header: {
         headers?: HttpHeaders | { [header: string]: string | string[]; };
     }): Observable<AuthResponse> {
-        try {
-            const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
-            return this.httpClient.post<AuthResponse>(`${url}`, data, header);
-        } catch (e) {
-            console.log(e);
-            this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login service, please contact administrator');
-        }
+        const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
+        return this.httpClient.post<AuthResponse>(`${url}`, data, header);
+
     }
 
     private getTokenFromNativeHttp(url: string, data, header): Observable<AuthResponse> {
@@ -154,7 +149,6 @@ export class AuthService {
             if (res.status === 200) {
                 const jsonData = JSON.parse(res.data);
                 await this.storeUserAuthData(jsonData);
-                this.authSubject.next(true);
                 return jsonData;
             } else {
                 alert(JSON.stringify(res));
@@ -178,16 +172,19 @@ export class AuthService {
             if (authDataObj.source === null || authDataObj.source === undefined) {
                 this.revokeRefreshToken(authDataObj);
             }
-            Plugins.Storage.remove({key: 'authData'}).then(() => {
-                this.authSubject.next(false);
-                this.router.navigateByUrl('login');
-            });
+            this.removeAuthData();
 
         });
     }
 
+    removeAuthData() {
+        Plugins.Storage.remove({key: 'authData'}).then(() => {
+            this.router.navigateByUrl('login');
+        });
+    }
+
     revokeRefreshToken(authData: AuthResponse) {
-        const url = `${this.urlFactoryService.getUrl('auth')}/connect/revocation`;
+        const url = `${environment.auth_Host}/connect/revocation`;
         const body = new HttpParams()
             .set('token', authData.refresh_token)
             .set('token_type_hint', 'refresh_token');
@@ -200,9 +197,6 @@ export class AuthService {
         return this.getUserTokenFromWebHttp(url, body, header).toPromise();
     }
 
-    isLoggedIn(): Promise<boolean> {
-        return this.authSubject.asObservable().toPromise();
-    }
 
     async getUserName(): Promise<string> {
         return Plugins.Storage.get({key: 'authData'})
@@ -225,8 +219,7 @@ export class AuthService {
 
 
     getSocialMediaRefreshToken(authData: AuthResponse): Promise<AuthResponse> {
-        const url = `${this.urlFactoryService.getUrl('auth')}/ExchangeToken/refresh`;
+        const url = `${environment.auth_Host}/ExchangeToken/refresh`;
         return this.getAuthResponseForSocialMedia(url, 'Facebook', authData.refresh_token).toPromise();
     }
-
 }
