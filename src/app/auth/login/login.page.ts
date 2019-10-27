@@ -26,16 +26,21 @@ export class LoginPage implements OnInit {
     }
 
     login(form: NgForm) {
-        this.authService.login(form.value).subscribe(
-            (res) => {
-                if (res.access_token) {
-                    this.routeToHome(form.value.email);
-                } else {
-                    console.log(res);
+        this.authService.login(form.value)
+            .subscribe(
+                (res) => {
+                    if (res.access_token) {
+                        this.routeToHome(form.value.email);
+                    } else {
+                        console.log(res);
+                        this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
+                    }
+                },
+                err => {
+                    alert(err);
                     this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
                 }
-            }
-        );
+            );
     }
 
     loginWithFacebook() {

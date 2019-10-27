@@ -29,7 +29,7 @@ export class EWalletService {
     }
 
     public getTransactionHistoryByUserId(userId: string): Promise<EWalletDto> {
-        const url = `${environment.eWallet_Host}/api/EWallets/user/${userId}`;
+        const url = `${environment.eWallet_Host}/api/EWallets/transaction/currentUser`;
         const header = {
             headers: new HttpHeaders().set('Content-Type', 'application/json')
         };

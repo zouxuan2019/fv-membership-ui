@@ -1,5 +1,13 @@
 import {Injectable} from '@angular/core';
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
+import {
+    HttpErrorResponse,
+    HttpEvent,
+    HttpHandler,
+    HttpHeaders,
+    HttpInterceptor,
+    HttpRequest,
+    HttpResponse
+} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Router} from '@angular/router';
@@ -25,6 +33,8 @@ export class TokenInterceptorService implements HttpInterceptor {
     async handle(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
         let changedRequest = request;
         if (!request.url.includes(environment.auth_Host)) {
+            alert(environment.auth_Host);
+            alert(request.url);
             changedRequest = await this._setHeaderToken(request);
         }
         return next.handle(changedRequest).pipe(
@@ -38,6 +48,8 @@ export class TokenInterceptorService implements HttpInterceptor {
                 if (error.status === 401) {
                     this.widgetUtilServiceService.presentToast('Unauthorized Request!');
                     return throwError(error);
+                } else {
+                    this.widgetUtilServiceService.presentToast('Unhandled Error Occurred');
                 }
             })).toPromise();
     }
@@ -48,7 +60,13 @@ export class TokenInterceptorService implements HttpInterceptor {
             const authDataObj = JSON.parse(au.value);
             if (authDataObj != null && await this.isTokenExpired(authDataObj)) {
                 await this.refreshToken(authDataObj);
-                this._setHeaderToken(request);
+                const authDataNew = Plugins.Storage.get({key: 'authData'});
+                const authDataObjNew = JSON.parse(au.value);
+                if (authDataObjNew != null && await !this.isTokenExpired(authDataObjNew)) {
+                    this._setHeaderToken(request);
+                } else {
+                    this.authService.removeAuthData();
+                }
             }
             if (authDataObj) {
                 const token = authDataObj.access_token;
@@ -67,14 +85,21 @@ export class TokenInterceptorService implements HttpInterceptor {
 
 
     refreshToken(authData: AuthResponse) {
-        if (authData.source === null) {
-            this.authService.getUserTokenByRefreshToken(authData).catch(ex => {
-                this.widgetUtilServiceService.presentToast('Refresh Token Failed');
-            });
+        if (authData.source === 'facebook') {
+            this.authService.getSocialMediaRefreshToken(authData)
+                .catch(ex => {
+                    this.authService.removeAuthData();
+                    this.widgetUtilServiceService.presentToast('Refresh Token Failed');
+                    return false;
+                });
         } else {
-            this.authService.getSocialMediaRefreshToken(authData).catch(ex => {
-                this.widgetUtilServiceService.presentToast('Refresh Token Failed');
-            });
+            this.authService.getUserTokenByRefreshToken(authData)
+                .catch(ex => {
+                    alert(authData.source + 'refresh token failed');
+                    this.authService.removeAuthData();
+                    this.widgetUtilServiceService.presentToast('Refresh Token Failed');
+                    return false;
+                });
         }
     }
 
