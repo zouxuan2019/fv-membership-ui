@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ConfigProvider } from '../config/config';
@@ -8,64 +8,75 @@ import { ConfigProvider } from '../config/config';
 
 @Injectable()
 export class RestProvider {
-  constructor(public http: HttpClient,public config:ConfigProvider) {
+  constructor(public http: HttpClient, public config: ConfigProvider) {
     console.log('Hello RestProvider Provider');
   }
- 
-  //log in
-  DoLogin(username,password): Observable<any> {
-    console.log(username);
 
-    var httpParams = new HttpParams()
-                       .set('StaffID', username)
-                       .set('Password',password);
-                       
-   var url=this.config.GetBaseApi()+this.config.LoginUrl;
-  
-   return this.http.post<any>(url, httpParams);
-  }
- 
-  AccountCheck(account){
-    console.log(account);
-    var httpParams = new HttpParams()
-                       .set('StaffID', account);
-    var url=this.config.GetBaseApi()+this.config.forgetPasswordUrl;                  
-    return this.http.post<any>(url,httpParams);
+  DoLogin(Username: any, Password: any): Observable<any> {
+    console.log(Username);
 
+    const postData = {
+      username: Username,
+      password: Password
+    };
+    const url = this.config.GetBaseApi() + this.config.LoginUrl;
+
+    return this.http.post<any>(url, postData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  
-  UpdatePassword(staffID,token,password){
-    console.log(staffID+token+password);
-   
-    var httpParams = new HttpParams()
-    .set('StaffID', staffID)
-    .set('Password',password)
-    .set('TempKey',token);
-    var url=this.config.GetBaseApi()+this.config.resetPasswordUrl;
-    return this.http.post<any>(url, httpParams);
-    
-  }
-  
-  
 
-  
-  //others
-  
-  // private extractData(res: Response) {
-  //   let body = res;
-  //   return body || { };
-  // }
-  
-  // private handleError (error: Response | any) {
-  //   let errMsg: string;
-  //   if (error instanceof Response) {
-  //     const err = error || '';
-  //     errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-  //   } else {
-  //     errMsg = error.message ? error.message : error.toString();
-  //   }
-  //   console.error(errMsg);
-  //   return Observable.throw(errMsg);
-  // }
+  Register(Username: any, Password: any, Email: any) {
+
+    const postData = {
+      username: Username,
+      password: Password,
+      email: Email
+    };
+    const url = this.config.GetBaseApi() + this.config.RegisterUrl;
+    return this.http.post<any>(url, postData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  ForgetPassword(Email: any) {
+    const postData = {
+      email: Email
+    };
+
+    const url = this.config.GetBaseApi() + this.config.forgetPasswordUrl;
+    return this.http.post<any>(url, postData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  ResetPassword(Token: string, Currentp: string, Newp: string, Email: string) {
+    console.log(Token + Currentp + Newp + Email);
+    const postData = {
+      token: Token,
+      currentPassword: Currentp,
+      newPassword: Newp,
+      email: Email
+    };
+
+    const url = this.config.GetBaseApi() + this.config.resetPasswordUrl;
+    return this.http.post<any>(url, postData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+  }
+  SendOTP(Email: string) {
+    console.log(Email);
+
+    const postData = {
+      email: Email
+    };
+
+    const url = this.config.GetBaseApi() + this.config.SendOtpUrl;
+    return this.http.post<any>(url, postData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+  }
 }
