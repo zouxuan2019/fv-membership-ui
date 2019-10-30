@@ -5,9 +5,6 @@
 export const environment = {
     production: false,
     fomo_Url: 'https://gateway.fomopay.com/sandbox/pgw/v1',
-    fomo_Merchant: 'test',
-    fomo_ApiKey: '00000000',
-
     eWallet_Host: 'https://localhost:5001',
     auth_Host: 'https://localhost:7001'
 };

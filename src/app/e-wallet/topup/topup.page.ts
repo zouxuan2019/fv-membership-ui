@@ -13,26 +13,27 @@ import {WidgetUtilServiceService} from '../../widget-util-service.service';
 })
 export class TopupPage extends AuthorizedPageBaseService implements OnInit {
     constructor(private eWalletService: EWalletService, private authService: AuthService,
-                private widgetUtilServiceService: WidgetUtilServiceService) {
+                private widgetUtilServiceService: WidgetUtilServiceService,
+                private fomomaymentService: FomopaymentService) {
         super();
     }
 
-    user: any = {name: 'Zou Xuan', balance: 100};
+    user: any = {name: 'Zou Xuan', balance: 0};
 
     ngOnInit() {
     }
 
     async topup(form) {
         console.log(form.value);
-        const topupBo = new FomoBo();
+        let topupBo = new FomoBo();
         topupBo.amount = form.value.amount;
         topupBo.description = form.value.description;
-        const fomopaymentService = new FomopaymentService(topupBo, this.eWalletService, this.authService);
-        const topUpResult = await fomopaymentService.saveTopUpTransaction();
+        topupBo = this.fomomaymentService.processFomoPayment(topupBo);
+        const topUpResult = await this.fomomaymentService.saveTopUpTransaction(topupBo);
 
         if (topUpResult.transactionId) {
-            fomopaymentService.processFomoPayment();
-            const html = fomopaymentService.postFomo();
+            topupBo.signature = await this.fomomaymentService.generateSignature(topupBo);
+            const html = this.fomomaymentService.postFomo(topupBo);
             document.write(html);
         } else {
             console.log(topUpResult);
