@@ -27,7 +27,7 @@ export class RestProvider {
   }
 
 
-  Register(Password: any, Email: any) {
+  Register(Password: any, Email: any): Observable<any> {
 
     const postData = {
       password: Password,

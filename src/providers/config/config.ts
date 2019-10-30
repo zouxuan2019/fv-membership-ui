@@ -16,7 +16,7 @@ export class ConfigProvider {
 
 
 
-  public RegisterUrl = this.apiUrl + 'register';
+  public RegisterUrl = 'register';
   public LoginUrl = 'login';
   public forgetPasswordUrl = 'forgotpassword';
   public resetPasswordUrl = 'changepassword';

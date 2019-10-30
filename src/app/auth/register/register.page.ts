@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { RestProvider } from '../../../providers/rest/rest';
-import { ToastController } from '@ionic/angular';
+import { ToastController , AlertController } from '@ionic/angular';
 import { Router, NavigationExtras} from '@angular/router';
+
+import { HttpClient } from '@angular/common/http';
 // import { LoginPage } from '../login/login.page';
 // import { from } from 'rxjs';
 
@@ -15,34 +17,50 @@ import { Router, NavigationExtras} from '@angular/router';
 
 export class RegisterPage implements OnInit {
 
-  constructor(private rest: RestProvider, private router: Router, public toastCtrl: ToastController) { }
+  constructor(private rest: RestProvider, private router: Router,
+              public alertCtrl: AlertController, public http: HttpClient) { }
 
   ngOnInit() {
   }
 
   register(form: NgForm) {
-    this.rest.Register(form.value.password, form.value.email)
-      .subscribe(
-        outcome => this.ProcessResult(JSON.parse(outcome)));
+    this.rest.Register(form.value.password, form.value.email).subscribe(
+        (res: any) => { console.log(res.status); this.ProcessResult(res); });
   }
   ProcessResult(data: any) {
-    if (data.username) {
+    if (data.status === '1') {
       console.log(data);
-      this.router.navigateByUrl('menu/home');
-      // this.navCtrl.push(LoginPage);
+      this.presentConfirm();
     } else {
-      console.error(data);
-      this.ErrorToast('Sorry, user register failed. Please try again.');
+      console.error(data.message);
+      this.ErrorToast(data.message);
     }
 
   }
   async ErrorToast(error: string) {
-      const toast = await this.toastCtrl.create({
-        message: error,
-        duration: 2000
-      });
-      toast.present();
-  }
+    const alert = await this.alertCtrl.create({
+      header: 'Info',
+      message: error,
+      buttons: ['OK']
+    });
 
+    await alert.present();
+  }
+  async presentConfirm() {
+    const alert = await this.alertCtrl.create({
+      header: 'Info',
+      message: 'You have successfully registered. Please login again.',
+      buttons: [
+        {
+          text: 'Proceed',
+          handler: () => {
+            console.log('ok clicked');
+            this.router.navigateByUrl('menu/home');
+          }
+        },
+      ]
+    });
+    alert.present();
+  }
 
 }

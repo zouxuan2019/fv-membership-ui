@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController} from '@ionic/angular';
+import { AlertController} from '@ionic/angular';
 import { RestProvider } from '../../../providers/rest/rest';
 import { NgForm } from '@angular/forms';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password',
@@ -11,13 +11,20 @@ import { Router, NavigationExtras } from '@angular/router';
 })
 export class ResetPasswordPage implements OnInit {
   submitAttempt = false;
+  email: any;
 
-  constructor(private router: Router, public rest: RestProvider, public toastCtrl: ToastController) {
 
+
+  constructor(private router: Router, private route: ActivatedRoute, public rest: RestProvider, public alertCtrl: AlertController) {
 
   }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      console.log('Received on forget password Page:', params);
+      this.email = params.email;
+      console.log(this.email);
+    });
   }
 
   resetPassword(form: NgForm) {
@@ -30,7 +37,7 @@ export class ResetPasswordPage implements OnInit {
 
       } else {
         this.rest.ResetPassword(form.value.token, form.value.password, form.value.rpassword, form.value.email).subscribe(
-          outcome => this.ProcessResult(JSON.parse(outcome)),
+          outcome => this.ProcessResult(outcome),
           error => this.ErrorToast(error));
 
       }
@@ -42,22 +49,39 @@ export class ResetPasswordPage implements OnInit {
 
   ProcessResult(data: any) {
     console.log(data);
-    if (data.status) {
-      this.ErrorToast(data.message);
-      this.router.navigateByUrl('/login');
+    if (data.status === '1') {
+      this.presentConfirm(data.message);
     } else {
       this.ErrorToast(data.messsage);
     }
 
-
-
   }
 
-  async ErrorToast(error: string) {
-    const toast = await this.toastCtrl.create({
+  async ErrorToast(error: any) {
+    console.log(error);
+    const alert = await this.alertCtrl.create({
+      header: 'Info',
       message: error,
-      duration: 2000
+      buttons: ['OK']
     });
-    toast.present();
+
+    await alert.present();
+  }
+
+  async presentConfirm(data: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Info',
+      message: 'Your password has been reset successfully! Please login again.',
+      buttons: [
+        {
+          text: 'Proceed',
+          handler: () => {
+            console.log('ok clicked');
+            this.router.navigateByUrl('/login');
+          }
+        },
+      ]
+    });
+    alert.present();
   }
 }
