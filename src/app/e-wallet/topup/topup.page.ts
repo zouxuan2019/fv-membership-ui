@@ -12,13 +12,20 @@ import {WidgetUtilServiceService} from '../../widget-util-service.service';
     styleUrls: ['./topup.page.scss'],
 })
 export class TopupPage extends AuthorizedPageBaseService implements OnInit {
+    user: any = {name: 'Zou Xuan', balance: 0};
+
     constructor(private eWalletService: EWalletService, private authService: AuthService,
                 private widgetUtilServiceService: WidgetUtilServiceService,
                 private fomomaymentService: FomopaymentService) {
         super();
+        authService.getUserName().then(userName => {
+            this.user.name = userName;
+            eWalletService.getTransactionHistoryByUserId(userName)
+                .then(x => {
+                    this.user.balance = x.balance;
+                });
+        });
     }
-
-    user: any = {name: 'Zou Xuan', balance: 0};
 
     ngOnInit() {
     }

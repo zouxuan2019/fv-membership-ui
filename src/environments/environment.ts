@@ -5,8 +5,10 @@
 export const environment = {
     production: false,
     fomo_Url: 'https://gateway.fomopay.com/sandbox/pgw/v1',
-    eWallet_Host: 'https://localhost:5001',
-    auth_Host: 'https://localhost:7001'
+    // eWallet_Host: 'https://localhost:5001',
+    // auth_Host: 'https://localhost:7001'
+    eWallet_Host: 'https://fvmembership-ewallet.appspot.com',
+    auth_Host: 'https://fvmembership-auth-257211.appspot.com',
 };
 
 /*
