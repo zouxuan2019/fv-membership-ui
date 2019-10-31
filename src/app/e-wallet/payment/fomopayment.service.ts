@@ -2,29 +2,17 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {FomoBo} from '../topup/fomo-bo';
 import uuid from 'uuid/v4';
-import {sha256} from 'js-sha256';
 import {EWalletService} from '../e-wallet.service';
 import {EWalletTopUpDeductionResponse, TopUpDto} from '../EWalletDto';
 import {AuthService} from '../../auth/auth.service';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
 })
 export class FomopaymentService {
 
-    constructor(private fomoBo: FomoBo, private eWalletService: EWalletService, private authService: AuthService) {
-        const host = this.getHost();
-        const eWalletHost = environment.eWallet_Host;
-        this.fomoBo = fomoBo;
-        this.fomoBo.returnUrl = `${host}/return`;
-        this.fomoBo.callbackUrl = `${eWalletHost}/api/Payment/callback`;
-        this.fomoBo.transaction = 'abc'; // uuid();
-        this.fomoBo.nonce = 'abc'; // uuid();
-        this.fomoBo.type = 'sale';
-        this.fomoBo.timeout = '1800';
-        this.fomoBo.currencyCode = 'sgd';
-        this.fomoBo.merchant = 'test';
-        console.log(this.fomoBo.returnUrl);
+    constructor(private eWalletService: EWalletService, private authService: AuthService, private httpClient: HttpClient) {
     }
 
     private getHost(): string {
@@ -32,49 +20,57 @@ export class FomopaymentService {
         return `${location.protocol}//${location.hostname}${port}`;
     }
 
-    public processFomoPayment() {
-        this.fomoBo.url = environment.fomo_Url;
-        this.fomoBo.merchant = environment.fomo_Merchant;
-        this.fomoBo.apiKey = environment.fomo_ApiKey;
-        this.fomoBo.signature = this.generateSignature();
+    public processFomoPayment(fomoBo: FomoBo): FomoBo {
+        const host = this.getHost();
+        const eWalletHost = environment.eWallet_Host;
+        fomoBo.returnUrl = `${host}/return`;
+        fomoBo.callbackUrl = `${eWalletHost}/api/Payment/callback`;
+        fomoBo.nonce = uuid();
+        fomoBo.type = 'sale';
+        fomoBo.timeout = '1800';
+        fomoBo.currencyCode = 'sgd';
+        fomoBo.merchant = 'test';
+        fomoBo.transaction = uuid();
+        fomoBo.url = environment.fomo_Url;
+        return fomoBo;
     }
 
-    private generateSignature(): string {
-        const queryString = `callback_url=${this.fomoBo.callbackUrl}&currency_code=${this.fomoBo.currencyCode}&description=${this.fomoBo.description}&merchant=${this.fomoBo.merchant}&nonce=${this.fomoBo.nonce}&price=${this.fomoBo.amount}&return_url=${this.fomoBo.returnUrl}&timeout=${this.fomoBo.timeout}&transaction=${this.fomoBo.transaction}&type=${this.fomoBo.type}&shared_key=${this.fomoBo.apiKey}`;
-        console.log(queryString);
-        const hash = sha256(queryString).toLowerCase();
-        console.log('hash:' + hash);
-        return hash;
+
+    public async generateSignature(fomoBo: FomoBo): Promise<string> {
+        const url = `${environment.eWallet_Host}/api/Payment/signature`;
+        const header = {
+            headers: new HttpHeaders().set('Content-Type', 'application/json')
+        };
+        const result = await this.httpClient.post<FomoBo>(url, fomoBo, header).toPromise();
+        return result.signature;
     }
 
-    public async saveTopUpTransaction(): Promise<EWalletTopUpDeductionResponse> {
+    public async saveTopUpTransaction(fomoBo: FomoBo): Promise<EWalletTopUpDeductionResponse> {
         const request = new TopUpDto();
         request.actionDate = this.eWalletService.getCurrentDate();
-        request.amount = this.fomoBo.amount;
-        request.paymentMerchant = this.fomoBo.merchant;
+        request.amount = fomoBo.amount;
+        request.paymentMerchant = fomoBo.merchant;
         request.status = 'Init';
-        const userName = await this.authService.getUserName();
-        request.userId = userName;
-        window.sessionStorage.setItem('transactionId', this.fomoBo.transaction);
-        request.transactionId = this.fomoBo.transaction;
+        window.sessionStorage.setItem('transactionId', fomoBo.transaction);
+        request.transactionId = fomoBo.transaction;
         return this.eWalletService.saveTopUpTransaction(request).toPromise();
     }
 
-    public postFomo(): string {
+    public postFomo(fomoBo: FomoBo): string {
         const html = `<html>
         <body>
-        <form name='fomopay' action='${this.fomoBo.url}' method='post'>
-        <input type=hidden name='merchant' value='${this.fomoBo.merchant}'>
-        <input type=hidden name='price' value='${this.fomoBo.amount}'>
-        <input type=hidden name='description' value='${this.fomoBo.description}'>
-        <input type=hidden name='transaction' value='${this.fomoBo.transaction}'>
-        <input type=hidden name='return_url' value='${this.fomoBo.returnUrl}'>
-        <input type=hidden name='callback_url' value='${this.fomoBo.callbackUrl}'>
-        <input type=hidden name='currency_code' value='${this.fomoBo.currencyCode}'>
-        <input type=hidden name='type' value='${this.fomoBo.type}'>
-        <input type=hidden name='timeout' value='${this.fomoBo.timeout}'>
-        <input type=hidden name='nonce' value='${this.fomoBo.nonce}'>
-        <input type=hidden name='signature' value='${this.fomoBo.signature}'>
+        <form name='fomopay' action='${fomoBo.url}' method='post'>
+        <input type=hidden name='merchant' value='${fomoBo.merchant}'>
+        <input type=hidden name='price' value='${fomoBo.amount}'>
+        <input type=hidden name='description' value='${fomoBo.description}'>
+        <input type=hidden name='transaction' value='${fomoBo.transaction}'>
+        <input type=hidden name='return_url' value='${fomoBo.returnUrl}'>
+        <input type=hidden name='callback_url' value='${fomoBo.callbackUrl}'>
+        <input type=hidden name='currency_code' value='${fomoBo.currencyCode}'>
+        <input type=hidden name='type' value='${fomoBo.type}'>
+        <input type=hidden name='timeout' value='${fomoBo.timeout}'>
+        <input type=hidden name='nonce' value='${fomoBo.nonce}'>
+        <input type=hidden name='signature' value='${fomoBo.signature}'>
         <span>Redirecting to payment gateway....</span>
         </form>
         </body>

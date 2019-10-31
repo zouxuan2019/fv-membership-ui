@@ -5,7 +5,8 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
-POST https://localhost:5001/api/Payment/callback
+POST https://fvmembership-ewallet.appspot.com/api/Payment/callback
+
 Content-Type: application/x-www-form-urlencoded
 
 transaction=abc&payment_id=aaa&result=0&nonce=nonce&upstream=wxpay&signature=b893ec9d97a8bb63b77bb840b1d0268f956cf96629eb3121dffc7c4ac4e062ec

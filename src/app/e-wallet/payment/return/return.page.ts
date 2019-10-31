@@ -8,7 +8,7 @@ import {AuthorizedPageBaseService} from '../../../authorized-page-base.service';
     styleUrls: ['./return.page.scss'],
 })
 export class ReturnPage extends AuthorizedPageBaseService implements OnInit {
-    private result: string;
+    public result: string;
 
     constructor(private eWalletService: EWalletService) {
         super();
