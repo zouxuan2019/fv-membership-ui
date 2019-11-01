@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Product} from './Product';
+import { AlertController} from '@ionic/angular';
 import {AuthorizedPageBaseService} from '../../authorized-page-base.service';
 
 @Component({
@@ -26,33 +27,31 @@ export class PurchasePage extends AuthorizedPageBaseService implements OnInit {
         }
     }
 
-    constructor() {
+    constructor(public alertCtrl: AlertController) {
         super();
     }
 
     ngOnInit() {
     }
 
-    ionViewDidLoad() {
-        console.log('ionViewDidLoad PurchasePage');
+    cart() {
+       this.performAlert('Successfully add to cart.');  
     }
 
-    ionViewWillEnter() {
-        // this.getLeftCateData();
-
+    submit() {
+        this.performAlert('Successfully purchased.');  
     }
 
-    ionViewWillLeave() {
-        console.log('ionViewWillLeave PurchasePage');
-    }
-
-    cancel() {
-        console.log('cancel');
-    }
-
-    dismiss() {
-        console.log('dismiss');
-    }
+    async performAlert(msg: any) {
+        console.log(msg);
+        const alert = await this.alertCtrl.create({
+          header: 'Info',
+          message: msg,
+          buttons: ['OK']
+        });
+    
+        await alert.present();
+      }
 }
 
 
