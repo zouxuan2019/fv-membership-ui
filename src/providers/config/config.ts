@@ -12,7 +12,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ConfigProvider {
   // public apiUrl = 'https://localhost:8085/fv/v1.0/'; // Development
-  public apiUrl = 'https://ec2-3-82-235-227.compute-1.amazonaws.com:8085/fv/v1.0/'; // cloud
+  public apiUrl = 'https://ijooze.xyz:8085/fv/v1.0/'; // cloud
 
 
 
