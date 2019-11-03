@@ -93,7 +93,7 @@ export class AuthService {
     }
 
     getAuthResponseForSocialMedia(url: string, source: string, token: string): Observable<AuthResponse> {
-        console.log(url);
+        // console.log(url);
         const body = {
             Source: source,
             Token: token

@@ -23,7 +23,7 @@ export class EWalletService {
     private saveTopUp(url: string, body: any, header: {
         headers?: HttpHeaders | { [header: string]: string | string[]; };
     }): Observable<EWalletTopUpDeductionResponse> {
-        console.log(url);
+        // console.log(url);
         const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
         return this.httpClient.post<EWalletTopUpDeductionResponse>(`${url}`, data, header);
     }
