@@ -18,7 +18,7 @@
         <ion-col size-md="6" offset-md="3" size="12">
           <ion-item>
             <ion-label position="floating">your@email.com</ion-label>
-            <ion-input name="email" type="email" ngModel required email #emailCtrl="ngModel"></ion-input>
+            <ion-input name="email" type="email" ngModel required email #emailCtrl="ngModel" maxlength="30"></ion-input>
           </ion-item>
           <ion-item *ngIf="!emailCtrl.valid && emailCtrl.touched" lines="none">
             <p>UserName should be a valid email</p>
@@ -29,7 +29,7 @@
         <ion-col size-md="6" offset-md="3" size="12">
           <ion-item>
             <ion-label position="floating">Password</ion-label>
-            <ion-input name="password" type="password" ngModel required minlength="6" #passwordCtrl="ngModel">
+            <ion-input name="password" type="password" ngModel required minlength="6" maxlength="30" #passwordCtrl="ngModel">
             </ion-input>
           </ion-item>
           <ion-item *ngIf="!passwordCtrl.valid && passwordCtrl.touched" lines="none">
