@@ -29,19 +29,19 @@
             </ion-item>
             <ion-item>
               <ion-label position="floating">Password</ion-label>
-              <ion-input name="password" type="password" ngModel required minlength="6" #passwordCtrl="ngModel">
+              <ion-input name="password" type="password" ngModel required minlength="8" #passwordCtrl="ngModel">
               </ion-input>
             </ion-item>
             <ion-item *ngIf="!passwordCtrl.valid && passwordCtrl.touched" lines="none">
-              <p>Password should contain at least 6 characters.</p>
+              <p>Password should contain at least 8 characters.</p>
             </ion-item>
             <ion-item>
               <ion-label position="floating">Confirm Password</ion-label>
-              <ion-input name="confirm" type="password" ngModel required minlength="6" #passwordCtrl2="ngModel">
+              <ion-input name="confirm" type="password" ngModel required minlength="8" #passwordCtrl2="ngModel">
               </ion-input>
             </ion-item>
             <ion-item *ngIf="!passwordCtrl2.valid && passwordCtrl2.touched" lines="none">
-              <p>Password should contain at least 6 characters.</p>
+              <p>Password should contain at least 8 characters.</p>
             </ion-item>
           </div>
           <div>

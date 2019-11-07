@@ -3,6 +3,7 @@
 - npm install -g ionic cordova
 - npm install --save-dev @angular-devkit/build-angular
 - npm install 'ionic-angular'
+- npm i -g native-run
 
 # Start server
 - ionic serve --ssl

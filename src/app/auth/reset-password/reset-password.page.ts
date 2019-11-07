@@ -32,7 +32,7 @@ export class ResetPasswordPage implements OnInit {
       if (form.value.password !== form.value.rpassword) {
 
         alert('Password not match');
-      } else if (form.value.password.length < 6) {
+      } else if (form.value.password.length < 8) {
         alert('Password not valid');
 
       } else {

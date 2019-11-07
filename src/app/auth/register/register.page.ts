@@ -24,8 +24,22 @@ export class RegisterPage implements OnInit {
   }
 
   register(form: NgForm) {
+    if (form.valid) {
+      if (form.value.password !== form.value.confirm) {
+
+        alert('Password not match');
+      } else if (form.value.password.length < 8) {
+        alert('Password not valid');
+
+      } else {
     this.rest.Register(form.value.password, form.value.email).subscribe(
         (res: any) => { console.log(res.status); this.ProcessResult(res); });
+
+      }
+    } else {
+      console.log('not success!');
+
+    }
   }
   ProcessResult(data: any) {
     if (data.status === '1') {
