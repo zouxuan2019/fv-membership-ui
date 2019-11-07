@@ -31,7 +31,6 @@ export class TopupPage extends AuthorizedPageBaseService implements OnInit {
     }
 
     async topup(form) {
-        console.log(form.value);
         let topupBo = new FomoBo();
         topupBo.amount = form.value.amount;
         topupBo.description = form.value.description;
