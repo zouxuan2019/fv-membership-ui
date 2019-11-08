@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="fb_app_id">509258982951178</string>
+    <string name="fb_app_name">com.fv.membership</string>
+    <string name="app_name">fv-memebership-ui</string>
+    <string name="title_activity_main">fv-memebership-ui</string>
+    <string name="package_name">io.ionic.starter</string>
+    <string name="fileprovider_authority">io.ionic.starter.fileprovider</string>
+    <string name="custom_url_scheme">io.ionic.starter</string>
+</resources>

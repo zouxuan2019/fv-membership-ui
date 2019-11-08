@@ -1,0 +1,10 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "fv-memebership-ui",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "server": {
+    "url": "http://localhost:8100"
+  }
+}
