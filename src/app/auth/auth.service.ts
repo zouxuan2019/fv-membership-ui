@@ -115,7 +115,7 @@ export class AuthService {
     }): Observable<AuthResponse> {
         return this.getAuthTokenResponse(url, body, header)
             .pipe(tap(async (res: AuthResponse) => {
-                if (res != null && res.access_token) {
+                if (res !== null && res.access_token) {
                     await this.storeUserAuthData(res);
                 } else {
                     console.log(res);
