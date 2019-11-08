@@ -118,9 +118,9 @@ export class AuthService {
                 if (res !== null && res.access_token) {
                     await this.storeUserAuthData(res);
                 } else {
-                    console.log(res);
+                    // console.log(res);
                     this.removeAuthData();
-                    this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
+                    // this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
                 }
             }));
     }
