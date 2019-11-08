@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController} from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { RestProvider } from '../../../providers/rest/rest';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -29,18 +29,9 @@ export class ResetPasswordPage implements OnInit {
 
   resetPassword(form: NgForm) {
     if (form.valid) {
-      if (form.value.password !== form.value.rpassword) {
-
-        alert('Password not match');
-      } else if (form.value.password.length < 8) {
-        alert('Password not valid');
-
-      } else {
-        this.rest.ResetPassword(form.value.token, form.value.password, form.value.rpassword, form.value.email).subscribe(
-          outcome => this.ProcessResult(outcome),
-          error => this.ErrorToast(error));
-
-      }
+      this.rest.ResetPassword(form.value.token, form.value.password, form.value.rpassword, form.value.email).subscribe(
+        outcome => this.ProcessResult(outcome),
+        error => this.ErrorToast(error));
     } else {
       console.log('not success!');
 
@@ -52,12 +43,12 @@ export class ResetPasswordPage implements OnInit {
     if (data.status === '1') {
       this.presentConfirm(data.message);
     } else {
-      this.ErrorToast(data.messsage);
+      this.ErrorToast(data.message);
     }
 
   }
 
-  async ErrorToast(error: any) {
+  async ErrorToast(error: string) {
     console.log(error);
     const alert = await this.alertCtrl.create({
       header: 'Info',

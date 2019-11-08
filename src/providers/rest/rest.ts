@@ -51,7 +51,7 @@ export class RestProvider {
   }
 
   ResetPassword(Token: string, Currentp: string, Newp: string, Email: string) {
-    console.log(Token + Currentp + Newp + Email);
+    console.log('token is' + Token +'Currentp is' + Currentp +'Newp is' + Newp +'Email is' + Email);
     const postData = {
       token: Token,
       currentPassword: Currentp,
