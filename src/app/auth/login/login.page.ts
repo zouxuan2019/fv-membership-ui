@@ -45,7 +45,9 @@ export class LoginPage implements OnInit {
     loginWithFacebook() {
         this.authService.loginWithFacebook().subscribe(
             (response) => {
-                this.routeToHome(this.jwtTokenService.getUserFromToken(response.access_token).name);
+                if (response != null) {
+                    this.routeToHome(this.jwtTokenService.getUserFromToken(response.access_token).name);
+                }
             }
         );
     }

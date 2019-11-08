@@ -66,7 +66,7 @@ export class TokenInterceptorService implements HttpInterceptor {
                     this.authService.removeAuthData();
                 }
             }
-            if (authDataObj) {
+            if (authDataObj != null) {
                 const token = authDataObj.access_token;
                 request = request.clone({
                     headers: request.headers.set(
