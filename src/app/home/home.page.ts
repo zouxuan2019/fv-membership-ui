@@ -25,7 +25,7 @@ export class HomePage extends AuthorizedPageBaseService {
                     this.user.balance = x.balance;
                 });
         });
-        Plugins.Storage.get({key: 'authData'}).then(x => console.log(x.value));
+        // Plugins.Storage.get({key: 'authData'}).then(x => console.log(x.value));
 
     }
 
