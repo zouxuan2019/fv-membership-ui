@@ -129,6 +129,7 @@ export class AuthService {
         headers?: HttpHeaders | { [header: string]: string | string[]; };
     }): Observable<AuthResponse> {
         const data = JSON.stringify(header).indexOf('application/json') > 0 ? JSON.stringify(body) : body.toString();
+
         return this.httpClient.post<AuthResponse>(`${url}`, data, header);
 
     }

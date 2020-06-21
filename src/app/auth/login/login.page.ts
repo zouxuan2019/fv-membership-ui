@@ -18,28 +18,29 @@ export class LoginPage implements OnInit {
     }
 
     ngOnInit() {
-        Plugins.Storage.get({key: 'authData'}).then(x => {
-            if (x.value !== null && x.value !== undefined) {
-                window.location.pathname = '/menu/home';
-            }
-        });
+        // Plugins.Storage.get({key: 'authData'}).then(x => {
+        //     if (x.value !== null && x.value !== undefined) {
+        //         window.location.pathname = '/menu/home';
+        //     }
+        // });
     }
 
     login(form: NgForm) {
-        this.authService.login(form.value)
-            .subscribe(
-                (res) => {
-                    if (res !== null && res.access_token) {
-                        this.routeToHome(form.value.email);
-                    } else {
-                        console.log(res);
-                        this.widgetUtilServiceService.presentToast('Please input correct username and password!');
-                    }
-                },
-                err => {
-                    this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
-                }
-            );
+        this.routeToHome(form.value.email);
+        // this.authService.login(form.value)
+        //     .subscribe(
+        //         (res) => {
+        //             if (res !== null && res.access_token) {
+        //                 this.routeToHome(form.value.email);
+        //             } else {
+        //                 console.log(res);
+        //                 this.widgetUtilServiceService.presentToast('Please input correct username and password!');
+        //             }
+        //         },
+        //         err => {
+        //             this.widgetUtilServiceService.presentToast('Ops!!There are some error occurred in login, please contact administrator');
+        //         }
+        //     );
     }
 
     loginWithFacebook() {

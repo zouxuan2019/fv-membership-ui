@@ -7,10 +7,10 @@ import {Plugins} from '@capacitor/core';
 export class AuthorizedPageBaseService {
 
     constructor() {
-        Plugins.Storage.get({key: 'authData'}).then(x => {
-            if (x.value === null) {
-                window.location.pathname = '/login';
-            }
-        });
+        // Plugins.Storage.get({key: 'authData'}).then(x => {
+        //     if (x.value === null) {
+        //         window.location.pathname = '/login';
+        //     }
+        // });
     }
 }

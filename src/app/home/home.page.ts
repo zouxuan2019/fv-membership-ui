@@ -18,14 +18,14 @@ export class HomePage extends AuthorizedPageBaseService {
     constructor(private route: ActivatedRoute, private router: Router,
                 private eWalletService: EWalletService, private authService: AuthService) {
         super();
-        authService.getUserName().then(userName => {
-            this.user.name = userName;
-            eWalletService.getTransactionHistoryByUserId(userName)
-                .then(x => {
-                    this.user.balance = x.balance;
-                });
-        });
-        // Plugins.Storage.get({key: 'authData'}).then(x => console.log(x.value));
+        this.user.name = 'Zou Xuan';
+        // authService.getUserName().then(userName => {
+        //     this.user.name = userName;
+        //     eWalletService.getTransactionHistoryByUserId(userName)
+        //         .then(x => {
+        //             this.user.balance = x.balance;
+        //         });
+        // });
 
     }
 
